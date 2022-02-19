@@ -37,10 +37,16 @@ Then you could create and link Darts like:
 
 struct Dart {
   // involutions:
-  // ..
+  Dart* a0 = nullptr;
+  Dart* a1 = nullptr;
+  Dart* a2 = nullptr;
+  Dart* a3 = nullptr;
 
   // cells:
-  // ...
+  Dart* v = nullptr;
+  Dart* e = nullptr;
+  Dart* f = nullptr;
+  Dart* vo = nullptr;
 
 };
 

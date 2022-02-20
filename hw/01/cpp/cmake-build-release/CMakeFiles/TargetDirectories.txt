@@ -1,3 +1,0 @@
-/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/cpp/cmake-build-release/CMakeFiles/rebuild_cache.dir
-/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/cpp/cmake-build-release/CMakeFiles/edit_cache.dir
-/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/cpp/cmake-build-release/CMakeFiles/hw01.dir

@@ -63,13 +63,13 @@ struct Vertex {
   {}
 
   // a dart incident to this Vertex:
-  // ...
+  Dart* dart = nullptr;
 
 };
 
 struct Edge {
   // a dart incident to this Edge:
-  // ...
+  Dart* dart = nullptr;
 
   // function to compute the barycenter for this Edge (needed for triangulation output):
   // Point barycenter() {}
@@ -77,7 +77,7 @@ struct Edge {
 
 struct Face {
   // a dart incident to this Face:
-  // ...
+  Dart* dart = nullptr;
 
   // function to compute the barycenter for this Face (needed for triangulation output):
   // Point barycenter() {}
@@ -86,6 +86,6 @@ struct Face {
 
 struct Volume {
   // a dart incident to this Volume:
-  // ...
+  Dart* dart = nullptr;
 
 };

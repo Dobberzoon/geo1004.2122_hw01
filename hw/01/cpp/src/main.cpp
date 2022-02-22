@@ -48,10 +48,12 @@ int main(int argc, const char * argv[]) {
     }
     stream_in.close();
 
-    int count = 1;
+    std::vector<Dart> darts;
+
+    int count = 0;
 
     for (auto i : vertices) {
-        std::cout << count << " point: " << i.point << "\n";
+        std::cout << "point " << count << ": " << i.point << "\n";
         count++;
     }
 
@@ -64,6 +66,13 @@ int main(int argc, const char * argv[]) {
 
         for (auto j: i) {
             std::cout << j << " " << vertices[j-1].point << "\n";
+        }
+    }
+
+    for (auto i: face_indices) {
+        int countTwo = 1;
+        for (auto j : i) {
+            if (countTwo == i.size()) {std::cout << "link to first \n";}
         }
     }
 

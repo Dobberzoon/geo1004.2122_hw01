@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 
 #include "Gmap.h"
 
@@ -35,12 +36,12 @@ int main(int argc, const char * argv[]) {
           std::vector<float> coordinates;
           while (iss >> word) coordinates.push_back(std::stof(word));
           if (coordinates.size() == 3) vertices.emplace_back(coordinates[0], coordinates[1], coordinates[2]);
-          else vertices.push_back(Vertex());
+          else vertices.emplace_back();
         }
 
         if (word == "f") {
           std::vector<int> face;
-          while (iss >> word) face.push_back(std::stoi(word));
+          while (iss >> word) face.emplace_back(std::stoi(word));
           face_indices.push_back(face);
         }
 
@@ -49,11 +50,11 @@ int main(int argc, const char * argv[]) {
     stream_in.close();
 
     std::vector<Dart> darts;
-    std::vector<Vertex> vertexVec;
+    std::unordered_map<std::string, Vertex> vertexMap;
     std::vector<Edge> edgeVec;
     std::vector<Face> faceVec;
 
-    int count = 0;
+    int count = 1;
 
     for (auto i : vertices) {
         std::cout << "point " << count << ": " << i.point << "\n";
@@ -78,11 +79,27 @@ int main(int argc, const char * argv[]) {
         std::cout << "( ";
         for (int j = 0; j < face_indices[i].size(); j++) {
             std::cout << face_indices[i][j] << " ";
-            if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+            Vertex vertex_cur;
+            std::string xyz;
+            //std::cout << "vertices[j-1].point.x: " << vertices[j-1].point.x << "\n";
+            vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
+            xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
+            //vertexMap.insert({vertex_cur.point, vertex_cur});
+            std::cout << "vertex_cur: " << vertex_cur.point << "\n";
+            std::cout << "vertex_cur STRING: " << xyz << "\n";
+            //if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
         }
         std::cout << ") \n";
+
+        /*
+        for (int j = 0; j < face_indices[i].size(); j++) {
+            std::cout << "point " << face_indices[i][j] << ": " << vertices[face_indices[i][j]-1].point << "\n";
+        }
+        std::cout << "\n";
+        */
     }
+    //std::cout << "vertexVec.size() = " << vertexMap.size();
 
 
   

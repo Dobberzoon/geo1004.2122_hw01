@@ -54,16 +54,32 @@ struct Vertex {
   // the coordinates of this vertex:
   Point point;
 
+  // also in string format for making keys
+  std::string xyz;
+
   // constructor without arguments
-  Vertex() : point(Point()) 
-  {}
+  Vertex() : point(Point()) {}
 
   // constructor with x,y,z arguments to immediately initialise the point member on this Vertex.
-  Vertex(const double &x, const double &y, const double &z) : point(Point(x,y,z))
-  {}
+  Vertex(const double &x, const double &y, const double &z) : point(Point(x,y,z)) {}
 
   // a dart incident to this Vertex:
   Dart* dart = nullptr;
+
+  /*
+  bool operator==(const Vertex& v) const {
+      return point.x == v.point.x && point.y == v.point.y && point.z == v.point.z;
+  }
+   */
+
+  std::string xyz_tostring(const double &x, const double &y, const double &z) {
+      std::string xS, yS, zS;
+      xS = std::to_string(x);
+      yS = std::to_string(y);
+      zS = std::to_string(z);
+      xyz = xS + yS + zS;
+      return xyz;
+  }
 
 };
 
@@ -110,3 +126,13 @@ struct Volume {
   Dart* dart = nullptr;
 
 };
+
+/*
+class HashVertexFunction {
+public:
+    size_t operator()(const Vertex& v) const {
+        return (std::hash<float>()(v.point.x)) ^ (std::hash<float>()(v.point.y)) ^
+               (std::hash<float>()(v.point.z));
+    }
+};
+ */

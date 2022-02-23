@@ -75,9 +75,9 @@ struct Edge {
   int origin_v, end_v;
 
   // constructor
-  Edge(const int &v1, const int &v2) {
-      this->origin_v = v1;
-      this->end_v = v2;
+  Edge(const int &origin_v, const int &end_v) {
+      this->origin_v = origin_v;
+      this->end_v = end_v;
   }
 
   // function to compute the barycenter for this Edge (needed for triangulation output):

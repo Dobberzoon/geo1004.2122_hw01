@@ -49,6 +49,9 @@ int main(int argc, const char * argv[]) {
     stream_in.close();
 
     std::vector<Dart> darts;
+    std::vector<Vertex> vertexVec;
+    std::vector<Edge> edgeVec;
+    std::vector<Face> faceVec;
 
     int count = 0;
 
@@ -61,6 +64,8 @@ int main(int argc, const char * argv[]) {
         std::cout << "( ";
         for (auto j: i) {
             std::cout << j << " ";
+            if (j == i.back()) {std::cout << i.front() << " ";}
+
         }
         std::cout << ") \n";
 
@@ -69,12 +74,6 @@ int main(int argc, const char * argv[]) {
         }
     }
 
-    for (auto i: face_indices) {
-        int countTwo = 1;
-        for (auto j : i) {
-            if (countTwo == i.size()) {std::cout << "link to first \n";}
-        }
-    }
 
   
   // ## Construct generalised map using the structures from Gmap.h ##

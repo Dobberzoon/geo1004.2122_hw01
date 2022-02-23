@@ -74,6 +74,16 @@ int main(int argc, const char * argv[]) {
         }
     }
 
+    for (int i = 0; i < face_indices.size(); i++) {
+        std::cout << "( ";
+        for (int j = 0; j < face_indices[i].size(); j++) {
+            std::cout << face_indices[i][j] << " ";
+            if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+
+        }
+        std::cout << ") \n";
+    }
+
 
   
   // ## Construct generalised map using the structures from Gmap.h ##

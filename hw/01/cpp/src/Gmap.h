@@ -71,6 +71,15 @@ struct Edge {
   // a dart incident to this Edge:
   Dart* dart = nullptr;
 
+  // begin and end vertex of edge
+  int origin_v, end_v;
+
+  // constructor
+  Edge(const int &v1, const int &v2) {
+      this->origin_v = v1;
+      this->end_v = v2;
+  }
+
   // function to compute the barycenter for this Edge (needed for triangulation output):
   // Point barycenter() {}
 };
@@ -78,6 +87,18 @@ struct Edge {
 struct Face {
   // a dart incident to this Face:
   Dart* dart = nullptr;
+
+  // face vertices
+  int v0, v1, v2, v3;
+
+  // constructor
+  // input vertices should be given in CCW
+  Face(const int &v0, const int &v1, const int &v2, const int &v3) {
+      this->v0 = v0;
+      this->v1 = v1;
+      this->v2 = v2;
+      this->v3 = v3;
+  }
 
   // function to compute the barycenter for this Face (needed for triangulation output):
   // Point barycenter() {}

@@ -40,7 +40,7 @@ int main(int argc, const char * argv[]) {
 
         if (word == "f") {
           std::vector<int> face;
-          while (iss >> word) face.push_back(std::stof(word));
+          while (iss >> word) face.push_back(std::stoi(word));
           face_indices.push_back(face);
         }
 

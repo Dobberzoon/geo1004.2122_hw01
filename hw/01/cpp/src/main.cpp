@@ -103,6 +103,8 @@ int main(int argc, const char * argv[]) {
             //std::cout << "vertex_cur STRING: " << xyz << "\n";
 
             // 1-cells
+            Edge edge_cur;
+            std::string edgeS;
             if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
         }

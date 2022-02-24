@@ -91,11 +91,26 @@ struct Edge {
   // begin and end vertex of edge
   int origin_v, end_v;
 
+  // also in string format for keys
+  std::string edgeS;
+
+  // constructor without arguments
+  Edge(){}
+
   // constructor
   Edge(const int &origin_v, const int &end_v) {
       this->origin_v = origin_v;
       this->end_v = end_v;
   }
+
+  // function to convert point.x/y/z into concatenated string
+  std::string edge_tostring(const int &origin_v, const int &end_v) {
+        std::string origin_vS, end_vS;
+        origin_vS = std::to_string(origin_v);
+        end_vS = std::to_string(end_v);
+        edgeS = origin_vS + end_vS;
+        return edgeS;
+    }
 
   // function to compute the barycenter for this Edge (needed for triangulation output):
   // Point barycenter() {}

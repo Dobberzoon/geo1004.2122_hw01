@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]) {
   std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
   
   // ## Read OBJ file ##
-
+  // The vertices and faces are read and stored into vectors.
 
     std::ifstream stream_in;
     stream_in.open(cube_test);
@@ -54,6 +54,7 @@ int main(int argc, const char * argv[]) {
     std::vector<Edge> edgeVec;
     std::vector<Face> faceVec;
 
+    /*
     int count = 1;
 
     for (auto i : vertices) {
@@ -74,20 +75,35 @@ int main(int argc, const char * argv[]) {
             std::cout << j << " " << vertices[j-1].point << "\n";
         }
     }
+    */
+
+    // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
+    // that make up each face.
 
     for (int i = 0; i < face_indices.size(); i++) {
+        // the std::cout's are only for visualising the loop process
         std::cout << "( ";
+
         for (int j = 0; j < face_indices[i].size(); j++) {
             std::cout << face_indices[i][j] << " ";
+
+            // Initialise variables
             Vertex vertex_cur;
             std::string xyz;
+
+            // Construct Vertex from current visiting point
             //std::cout << "vertices[j-1].point.x: " << vertices[j-1].point.x << "\n";
             vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
+
+            // For storing the cells, we use unordered_map, this will prevent multiple addition of same cells
+            // 0-cells
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
             vertexMap.insert({xyz, vertex_cur});
             //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
             //std::cout << "vertex_cur STRING: " << xyz << "\n";
-            //if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+
+            // 1-cells
+            if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
         }
         std::cout << ") \n";

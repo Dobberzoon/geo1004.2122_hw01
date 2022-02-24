@@ -11,15 +11,14 @@ int main(int argc, const char * argv[]) {
   std::string cube_test_test = "/Users/leokan/CLionProjects/geo1004.2122_hw01/hw/01/data/cube.obj";
   std::string cube_test = "/Users/leokan/CLionProjects/geo1004.2122_hw01/hw/01/data/cube2.obj";
   std::string cube_test2 = "/Users/leokan/CLionProjects/geo1004.2122_hw01/hw/01/data/torus.obj";
-  std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
-  std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
-  std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
-  std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
-  std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
-  std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
+//  std::string file_out_obj = "/Users/leokan/CLionProjects/geo1004.2022/hw/01/data/torus_triangulated.obj";
+//  std::string file_out_csv_d = "/Users/leokan/CLionProjects/geo1004.2022/hw/01/data/torus_darts.csv";
+//  std::string file_out_csv_0 = "/Users/leokan/CLionProjects/geo1004.2022/hw/01/data/torus_vertices.csv";
+//  std::string file_out_csv_1 = "/Users/leokan/CLionProjects//geo1004.2022/hw/01/data/torus_edges.csv";
+//  std::string file_out_csv_2 = "//Users/leokan/CLionProjects/geo1004.2022/hw/01/data/torus_faces.csv";
+//  std::string file_out_csv_3 = "//Users/leokan/CLionProjects/geo1004.2022/hw/01/data/torus_volume.csv";
   
   // ## Read OBJ file ##
-
 
     std::ifstream stream_in;
     stream_in.open(cube_test);

@@ -8,22 +8,22 @@ product as `p.dot(q)` or `p.cross(q)`.
 */
 struct Point {
   float x, y, z;
-  
+
   // constructor without arguments; initialises all coordinates on 0.
   Point() : x(0), y(0), z(0)
   {}
-  
+
   // constructor with x,y,z arguments;
   Point(const float &x, const float &y, const float &z) : x(x), y(y), z(z)
   {}
-  
+
   // non-const coordinate accessor with `[]`
   float &operator[](const int &coordinate) {
     if (coordinate == 0) return x;
     else if (coordinate == 1) return y;
     else if (coordinate == 2) return z;
   }
-  
+
   // const coordinate accessor with `[]`
   float operator[](const int &coordinate) const {
     if (coordinate == 0) return x;
@@ -32,44 +32,44 @@ struct Point {
   }
 
   // assignment operator. Assigns values from other point to this point
-  void operator=(const Point &other) {
+  void operator = (const Point &other) {
     x=other.x;
     y=other.y;
     z=other.z;
   }
-  
+
   // addition operator (yields a new point)
-  const Point operator+(const Point &other) const {
+  const Point operator + (const Point &other) const {
     return Point(x+other.x, y+other.y, z+other.z);
   }
-  
+
   // assignment/addition operator. Adds other point to this point.
   void operator+=(const Point &other) {
     x+=other.x;
     y+=other.y;
     z+=other.z;
   }
-  
+
   // subtraction operator (yields a new point)
   const Point operator-(const Point &other) const {
     return Point(x-other.x, y-other.y, z-other.z);
   }
-  
+
   // element-wise multiplication operator (yields a new point)
   const Point operator*(const float &other) const {
     return Point(x*other, y*other, z*other);
   }
-  
+
   // division operator (yields a new point)
   const Point operator/(const float &other) const {
     return Point(x/other, y/other, z/other);
   }
-  
+
   // dot product operator
   float dot(const Point &other) const {
     return x*other.x + y*other.y + z*other.z;
   }
-  
+
   // cross product operator
   const Point cross(const Point &other) const {
     return Point(y*other.z-z*other.y, -(x*other.z-z*other.x), x*other.y-y*other.x);

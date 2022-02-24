@@ -53,6 +53,7 @@ struct Dart {
 struct Vertex {
   // the coordinates of this vertex:
   Point point;
+  int id;
 
   // constructor without arguments
   Vertex() : point(Point()) 
@@ -73,19 +74,31 @@ struct Edge {
 
   // function to compute the barycenter for this Edge (needed for triangulation output):
   // Point barycenter() {}
+  Point bcentre;
+
+  // function to compute the barycenter for this Edge (needed for triangulation output):
+  Point barycenter(Point a, Point b){
+    bcentre = (a + b) / 2;
+    return bcentre;
+  }
 };
 
 struct Face {
+    int id;
   // a dart incident to this Face:
   // ...
 
   // function to compute the barycenter for this Face (needed for triangulation output):
   // Point barycenter() {}
 
+  int e, f2, f3, d;
+  int f_id;
+
 };
 
 struct Volume {
   // a dart incident to this Volume:
   // ...
+
 
 };

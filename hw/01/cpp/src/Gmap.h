@@ -72,6 +72,7 @@ struct Vertex {
   }
    */
 
+  // function to convert point.x/y/z into concatenated string
   std::string xyz_tostring(const double &x, const double &y, const double &z) {
       std::string xS, yS, zS;
       xS = std::to_string(x);

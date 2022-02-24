@@ -84,9 +84,9 @@ int main(int argc, const char * argv[]) {
             //std::cout << "vertices[j-1].point.x: " << vertices[j-1].point.x << "\n";
             vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
-            //vertexMap.insert({vertex_cur.point, vertex_cur});
-            std::cout << "vertex_cur: " << vertex_cur.point << "\n";
-            std::cout << "vertex_cur STRING: " << xyz << "\n";
+            vertexMap.insert({xyz, vertex_cur});
+            //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
+            //std::cout << "vertex_cur STRING: " << xyz << "\n";
             //if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
         }
@@ -99,7 +99,7 @@ int main(int argc, const char * argv[]) {
         std::cout << "\n";
         */
     }
-    //std::cout << "vertexVec.size() = " << vertexMap.size();
+    std::cout << "vertexMap.size() = " << vertexMap.size();
 
 
   

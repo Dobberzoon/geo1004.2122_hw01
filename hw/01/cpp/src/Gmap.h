@@ -89,10 +89,10 @@ struct Edge {
   Dart* dart = nullptr;
 
   // begin and end vertex of edge
-  int origin_v, end_v, sum;
+  int origin_v, end_v;
 
   // also in string format for keys
-  std::string edgeS, sumS;
+  std::string edgeS;
 
   // constructor without arguments
   Edge(){}
@@ -106,11 +106,7 @@ struct Edge {
   // function to convert point.x/y/z into concatenated string
   std::string edge_tostring(const int &origin_v, const int &end_v) {
 
-        //sum = origin_v + end_v + 1;
-
         std::string origin_vS, end_vS;
-
-        //sumS = std::to_string(sum);
         origin_vS = std::to_string(origin_v);
         end_vS = std::to_string(end_v);
         edgeS = origin_vS + end_vS;
@@ -128,6 +124,12 @@ struct Face {
   // face vertices
   int v0, v1, v2, v3;
 
+  // also in string format for keys
+  std::string faceS;
+
+  // constructor without arguments
+  Face() {}
+
   // constructor
   // input vertices should be given in CCW
   Face(const int &v0, const int &v1, const int &v2, const int &v3) {
@@ -137,6 +139,15 @@ struct Face {
       this->v3 = v3;
   }
 
+  // function to convert point.x/y/z into concatenated string
+  std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {
+
+      std::string v0S, v1S, v2S, v3S;
+
+      v0S = std::to_string(v0); v1S = std::to_string(v1); v2S = std::to_string(v2); v3S = std::to_string(v3);
+      faceS = v0S + v1S + v2S + v3S;
+      return faceS;
+  }
   // function to compute the barycenter for this Face (needed for triangulation output):
   // Point barycenter() {}
 
@@ -148,12 +159,3 @@ struct Volume {
 
 };
 
-/*
-class HashVertexFunction {
-public:
-    size_t operator()(const Vertex& v) const {
-        return (std::hash<float>()(v.point.x)) ^ (std::hash<float>()(v.point.y)) ^
-               (std::hash<float>()(v.point.z));
-    }
-};
- */

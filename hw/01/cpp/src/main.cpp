@@ -24,8 +24,17 @@ int main(int argc, const char * argv[]) {
 
     std::ifstream stream_in;
     stream_in.open(cube_test);
+
+    // where we store cells
+    std::vector<Dart> darts;
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> face_indices;
+
+    std::unordered_map<std::string, Vertex> vertexMap;
+    std::unordered_map<std::string, Edge> edgeMap;
+    std::vector<Face> faceVec;
+    Volume volume;
+
     if (stream_in.is_open()) {
       std::string line;
       while (getline(stream_in, line)) {
@@ -43,17 +52,19 @@ int main(int argc, const char * argv[]) {
           std::vector<int> face;
           while (iss >> word) face.emplace_back(std::stoi(word));
           face_indices.push_back(face);
+          // 2-cells
+          Face face_cur;
+          face_cur = Face(face[0],face[1],face[2],face[3]);
+          faceVec.emplace_back(face_cur);
         }
 
       }
     }
     stream_in.close();
 
-    std::vector<Dart> darts;
-    std::unordered_map<std::string, Vertex> vertexMap;
-    std::unordered_map<std::string, Edge> edgeMap;
-    std::vector<Edge> edgeVec;
-    std::vector<Face> faceVec;
+
+
+
 
     /*
      * some print you can use to visualise what is stored in the vectors face_indices and vertices
@@ -82,10 +93,13 @@ int main(int argc, const char * argv[]) {
     // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
     // that make up each face.
 
+    int count = 0;
     for (int i = 0; i < face_indices.size(); i++) {
+
         // the std::cout's are only for visualising the loop process
         std::cout << "( ";
 
+        // 0-cells
         for (int j = 0; j < face_indices[i].size(); j++) {
             std::cout << face_indices[i][j] << " ";
 
@@ -98,7 +112,7 @@ int main(int argc, const char * argv[]) {
             vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
 
             // For storing the cells, we use unordered_map, this will prevent multiple addition of same cells
-            // 0-cells
+
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
             vertexMap.insert({xyz, vertex_cur});
             //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
@@ -164,6 +178,7 @@ int main(int argc, const char * argv[]) {
     }
     std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
+    std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
 
 

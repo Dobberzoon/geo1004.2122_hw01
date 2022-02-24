@@ -55,6 +55,7 @@ int main(int argc, const char * argv[]) {
     std::vector<Face> faceVec;
 
     /*
+     * some print you can use to visualise what is stored in the vectors face_indices and vertices
     int count = 1;
 
     for (auto i : vertices) {

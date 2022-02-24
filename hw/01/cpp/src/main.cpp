@@ -51,6 +51,7 @@ int main(int argc, const char * argv[]) {
 
     std::vector<Dart> darts;
     std::unordered_map<std::string, Vertex> vertexMap;
+    std::unordered_map<std::string, Edge> edgeMap;
     std::vector<Edge> edgeVec;
     std::vector<Face> faceVec;
 
@@ -102,14 +103,57 @@ int main(int argc, const char * argv[]) {
             vertexMap.insert({xyz, vertex_cur});
             //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
             //std::cout << "vertex_cur STRING: " << xyz << "\n";
-
-            // 1-cells
-            Edge edge_cur;
-            std::string edgeS;
             if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+
+
 
         }
         std::cout << ") \n";
+
+        for (int j = 0; j < face_indices[i].size(); j++) {
+            // 1-cells
+            Edge edge_cur;
+            std::string edgeS;
+
+            if (face_indices[i][j] == face_indices[i].back()) {
+                //std::cout << "This should be the last: " << face_indices[i][0] - 1  << "\n";
+                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][0] - 1 << "\n";
+                if ((face_indices[i][j]-1) > (face_indices[i][0]-1)) {
+                    edge_cur = Edge(face_indices[i][0]-1, face_indices[i][j]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+                else {
+                    edge_cur = Edge(face_indices[i][j]-1, face_indices[i][0]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+
+                //std::cout << "edge in string: " << edgeS << "\n";
+            }
+
+            else {
+                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][j+1]-1 << "\n";
+                if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
+                    edge_cur = Edge(face_indices[i][j+1]-1, face_indices[i][j]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+                else {
+                    edge_cur = Edge(face_indices[i][j]-1, face_indices[i][j+1]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+
+                //edge_cur = Edge(face_indices[i][j]-1, face_indices[i][j+1]-1);
+                //edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                //edgeMap.insert({edgeS, edge_cur});
+                //std::cout << "edge in string: " << edgeS << "\n";
+            }
+
+
+
+        }
 
         /*
         for (int j = 0; j < face_indices[i].size(); j++) {
@@ -118,7 +162,10 @@ int main(int argc, const char * argv[]) {
         std::cout << "\n";
         */
     }
-    std::cout << "vertexMap.size() = " << vertexMap.size();
+    std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
+    std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
+
+
 
 
   

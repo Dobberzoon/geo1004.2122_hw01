@@ -89,10 +89,10 @@ struct Edge {
   Dart* dart = nullptr;
 
   // begin and end vertex of edge
-  int origin_v, end_v;
+  int origin_v, end_v, sum;
 
   // also in string format for keys
-  std::string edgeS;
+  std::string edgeS, sumS;
 
   // constructor without arguments
   Edge(){}
@@ -105,7 +105,12 @@ struct Edge {
 
   // function to convert point.x/y/z into concatenated string
   std::string edge_tostring(const int &origin_v, const int &end_v) {
+
+        //sum = origin_v + end_v + 1;
+
         std::string origin_vS, end_vS;
+
+        //sumS = std::to_string(sum);
         origin_vS = std::to_string(origin_v);
         end_vS = std::to_string(end_v);
         edgeS = origin_vS + end_vS;

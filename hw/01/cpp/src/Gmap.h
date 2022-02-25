@@ -66,12 +66,6 @@ struct Vertex {
   // a dart incident to this Vertex:
   Dart* dart = nullptr;
 
-  /*
-  bool operator==(const Vertex& v) const {
-      return point.x == v.point.x && point.y == v.point.y && point.z == v.point.z;
-  }
-   */
-
   // function to convert point.x/y/z into concatenated string
   std::string xyz_tostring(const double &x, const double &y, const double &z) {
       std::string xS, yS, zS;

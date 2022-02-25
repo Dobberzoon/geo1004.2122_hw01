@@ -158,23 +158,13 @@ int main(int argc, const char * argv[]) {
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
                     edgeMap.insert({edgeS, edge_cur});
                 }
-
-                //edge_cur = Edge(face_indices[i][j]-1, face_indices[i][j+1]-1);
-                //edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
-                //edgeMap.insert({edgeS, edge_cur});
-                //std::cout << "edge in string: " << edgeS << "\n";
+                
             }
 
 
 
         }
 
-        /*
-        for (int j = 0; j < face_indices[i].size(); j++) {
-            std::cout << "point " << face_indices[i][j] << ": " << vertices[face_indices[i][j]-1].point << "\n";
-        }
-        std::cout << "\n";
-        */
     }
     std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";

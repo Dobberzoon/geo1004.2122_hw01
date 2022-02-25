@@ -115,7 +115,7 @@ int main(int argc, const char * argv[]) {
 
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
             vertexMap.insert({xyz, vertex_cur});
-            //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
+            std::cout << "vertex_cur: " << vertex_cur.point << "\n";
             //std::cout << "vertex_cur STRING: " << xyz << "\n";
             if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
@@ -158,10 +158,8 @@ int main(int argc, const char * argv[]) {
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
                     edgeMap.insert({edgeS, edge_cur});
                 }
-                
+
             }
-
-
 
         }
 
@@ -170,8 +168,16 @@ int main(int argc, const char * argv[]) {
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
-
-
+    //    iterating over all value of umap
+    std::unordered_map<std::string, Vertex>:: iterator itr;
+    std::cout << "\nAll Elements : \n";
+    for (itr = vertexMap.begin(); itr != vertexMap.end(); itr++)
+    {
+        // itr works as a pointer to pair<string, double>
+        // type itr->first stores the key part  and
+        // itr->second stores the value part
+        std::cout << itr->first << "  \n" << itr->second.point << std::endl;
+    }
 
   
   // ## Construct generalised map using the structures from Gmap.h ##

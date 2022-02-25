@@ -29,10 +29,6 @@ void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<st
                 std::vector<int> face;
                 while (iss >> word) face.emplace_back(std::stoi(word));
                 face_indices.push_back(face);
-                // 2-cells
-                //Face face_cur;
-                //face_cur = Face(face[0],face[1],face[2],face[3]);
-                //faceVec.emplace_back(face_cur);
             }
 
         }
@@ -139,42 +135,69 @@ int main(int argc, const char * argv[]) {
   // ## Read OBJ file ##
   // The vertices and faces are read and stored into vectors.
 
-    std::vector<Vertex> vertices;
-    std::vector<std::vector<int>> face_indices;
+  std::vector<Vertex> vertices;
+  std::vector<std::vector<int>> face_indices;
 
-    // where we store cells
-    std::vector<Dart> darts;
-
-
-    std::unordered_map<std::string, Vertex> vertexMap;
-    std::unordered_map<std::string, Edge> edgeMap;
-    std::vector<Face> faceVec;
-    Volume volume;
-
-    readObj(cube_test, vertices, face_indices);
-
-    extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
-
-    std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
-    std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
-    std::cout << "faceVec.size() = " << faceVec.size() << "\n";
-
-
-
-    /*
-    //    iterating over all value of vertexMap
-    std::unordered_map<std::string, Vertex>:: iterator itr;
-    std::cout << "\nAll Elements : \n";
-    for (itr = vertexMap.begin(); itr != vertexMap.end(); itr++)
-    {
-        // itr works as a pointer to pair<string, double>
-        // type itr->first stores the key part  and
-        // itr->second stores the value part
-        std::cout << itr->first << "  \n" << itr->second.point << std::endl;
-    }
-    */
-  
   // ## Construct generalised map using the structures from Gmap.h ##
+
+  // where we store darts and cells
+  std::vector<Dart> darts;
+  std::unordered_map<std::string, Vertex> vertexMap;
+  std::unordered_map<std::string, Edge> edgeMap;
+  std::vector<Face> faceVec;
+  Volume volume;
+
+  readObj(cube_test, vertices, face_indices);
+
+  extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
+
+  std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
+  std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
+  std::cout << "faceVec.size() = " << faceVec.size() << "\n";
+
+
+
+  //    iterating over all value of vertexMap
+  std::unordered_map<std::string, Vertex>:: iterator itrV;
+  std::unordered_map<std::string, Edge>:: iterator itrE;
+  std::cout << "\nAll Elements : \n";
+
+  std::cout << "\nVertices : \n";
+  for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
+      // itrV works as a pointer to pair<string, double>
+      // type itrV->first stores the key part  and
+      // itrV->second stores the value part
+      std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
+  }
+
+    std::cout << "\nEdges : \n";
+  for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
+      // itrE works as a pointer to pair<string, double>
+      // type itrE->first stores the key part  and
+      // itrE->second stores the value part
+      std::cout << "key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
+  }
+
+  std::cout << "\nfaces : \n";
+  for (auto i:faceVec) {
+      std::cout << "the face vertices: ";
+      for (auto j:i.face_vertices) {
+          std::cout << j << " ";
+      }
+      std::cout << "\n";
+  }
+
+  std::cout << "\ndarts : \n";
+
+  for (auto i:faceVec) {
+      std::cout << "the face vertices: ";
+      for (auto j:i.face_vertices) {
+          std::cout << j << " ";
+      }
+      std::cout << "\n";
+  }
+  
+
   
   // ## Output generalised map to CSV ##
 

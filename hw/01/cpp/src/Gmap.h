@@ -116,22 +116,24 @@ struct Face {
   Dart* dart = nullptr;
 
   // face vertices
+  std::vector<int> face_vertices;
   int v0, v1, v2, v3;
 
   // also in string format for keys
   std::string faceS;
 
   // constructor without arguments
-  Face() {}
+  //Face() {}
 
   // constructor
   // input vertices should be given in CCW
-  Face(const int &v0, const int &v1, const int &v2, const int &v3) {
-      this->v0 = v0;
-      this->v1 = v1;
-      this->v2 = v2;
-      this->v3 = v3;
+  /*
+  Face(const std::vector<const int> &vertices) {
+      for (auto i:vertices) {
+          face_vertices.push_back(i);
+      }
   }
+   */
 
   // function to convert point.x/y/z into concatenated string
   std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {

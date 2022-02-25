@@ -8,13 +8,9 @@
 
 #include "Gmap.h"
 
-void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &vertexMap, std::unordered_map<std::string,
-             Edge> &edgeMap, std::vector<Face> &faceVec, Volume &volume) {
+void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices) {
     std::ifstream stream_in;
     stream_in.open(file_in);
-
-    std::vector<Vertex> vertices;
-    std::vector<std::vector<int>> face_indices;
 
     if (stream_in.is_open()) {
         std::string line;
@@ -34,9 +30,9 @@ void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &verte
                 while (iss >> word) face.emplace_back(std::stoi(word));
                 face_indices.push_back(face);
                 // 2-cells
-                Face face_cur;
-                face_cur = Face(face[0],face[1],face[2],face[3]);
-                faceVec.emplace_back(face_cur);
+                //Face face_cur;
+                //face_cur = Face(face[0],face[1],face[2],face[3]);
+                //faceVec.emplace_back(face_cur);
             }
 
         }
@@ -69,10 +65,11 @@ void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &verte
             std::cout << j << " " << vertices[j-1].point << "\n";
         }
     }
-    */
+
 
     // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
     // that make up each face.
+
 
     for (int i = 0; i < face_indices.size(); i++) {
 
@@ -99,12 +96,6 @@ void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &verte
             //std::cout << "vertex_cur STRING: " << xyz << "\n";
             if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
-
-
-        }
-        std::cout << ") \n";
-
-        for (int j = 0; j < face_indices[i].size(); j++) {
             // 1-cells
             Edge edge_cur;
             std::string edgeS;
@@ -138,11 +129,94 @@ void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &verte
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
                     edgeMap.insert({edgeS, edge_cur});
                 }
+            }
+        }
+    }
+     */
+}
 
+void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
+                  std::unordered_map<std::string, Vertex> &vertexMap, std::unordered_map<std::string, Edge> &edgeMap,
+                  std::vector<Face> &faceVec, Volume &volume) {
+
+    // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
+    // that make up each face.
+
+    for (int i = 0; i < face_indices.size(); i++) {
+
+        // 2-cells
+        Face face_cur;
+
+
+        // the std::cout's are only for visualising the loop process
+        std::cout << "( ";
+
+
+        // 0-cells
+        for (int j = 0; j < face_indices[i].size(); j++) {
+            std::cout << face_indices[i][j] << " ";
+
+            // Initialise variables
+            Vertex vertex_cur;
+            std::string xyz;
+
+            // Construct Vertex from current visiting point
+            //std::cout << "vertices[j-1].point.x: " << vertices[j-1].point.x << "\n";
+            vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
+
+            // For storing the cells, we use unordered_map, this will prevent multiple addition of same cells
+
+            xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
+            vertexMap.insert({xyz, vertex_cur});
+            //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
+            //std::cout << "vertex_cur STRING: " << xyz << "\n";
+            if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+
+            // 1-cells
+            Edge edge_cur;
+            std::string edgeS;
+
+            if (face_indices[i][j] == face_indices[i].back()) {
+                //std::cout << "This should be the last: " << face_indices[i][0] - 1  << "\n";
+                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][0] - 1 << "\n";
+                if ((face_indices[i][j]-1) > (face_indices[i][0]-1)) {
+                    edge_cur = Edge(face_indices[i][0]-1, face_indices[i][j]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+                else {
+                    edge_cur = Edge(face_indices[i][j]-1, face_indices[i][0]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+
+                //std::cout << "edge in string: " << edgeS << "\n";
             }
 
-        }
+            else {
+                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][j+1]-1 << "\n";
+                if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
+                    edge_cur = Edge(face_indices[i][j+1]-1, face_indices[i][j]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+                else {
+                    edge_cur = Edge(face_indices[i][j]-1, face_indices[i][j+1]-1);
+                    edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
+                    edgeMap.insert({edgeS, edge_cur});
+                }
+            }
 
+            face_cur.face_vertices.push_back(face_indices[i][j]-1);
+
+            if (j == (face_indices[i].size() - 1)) {
+                //std::cout << "end is reached! \n";
+                //std::cout << "size face_cur.vertices: " << face_cur.face_vertices.size() << "\n";
+                //std::cout << "face_cur.vertices: " << face_cur.face_vertices[0] << ", " << face_cur.face_vertices[1] << ", " << face_cur.face_vertices[2] << ", " << face_cur.face_vertices[3] << "\n";
+                faceVec.push_back(face_cur);
+            }
+        }
+        std::cout << " ) \n";
     }
 }
 
@@ -160,6 +234,8 @@ int main(int argc, const char * argv[]) {
   // ## Read OBJ file ##
   // The vertices and faces are read and stored into vectors.
 
+    std::vector<Vertex> vertices;
+    std::vector<std::vector<int>> face_indices;
 
     // where we store cells
     std::vector<Dart> darts;
@@ -170,11 +246,15 @@ int main(int argc, const char * argv[]) {
     std::vector<Face> faceVec;
     Volume volume;
 
-    readObj(cube_test, vertexMap, edgeMap, faceVec, volume);
+    readObj(cube_test, vertices, face_indices);
+
+    extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
 
     std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
+
+
 
     /*
     //    iterating over all value of vertexMap

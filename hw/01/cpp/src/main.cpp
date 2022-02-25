@@ -8,57 +8,38 @@
 
 #include "Gmap.h"
 
-int main(int argc, const char * argv[]) {
-  std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
-  std::string cube_test = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
-  std::string cube_test2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/cube2.obj";
-  std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
-  std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
-  std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
-  std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
-  std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
-  std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
-  
-  // ## Read OBJ file ##
-  // The vertices and faces are read and stored into vectors.
-
+void readObj(std::string &file_in,std::unordered_map<std::string, Vertex> &vertexMap, std::unordered_map<std::string,
+             Edge> &edgeMap, std::vector<Face> &faceVec, Volume &volume) {
     std::ifstream stream_in;
-    stream_in.open(cube_test);
+    stream_in.open(file_in);
 
-    // where we store cells
-    std::vector<Dart> darts;
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> face_indices;
 
-    std::unordered_map<std::string, Vertex> vertexMap;
-    std::unordered_map<std::string, Edge> edgeMap;
-    std::vector<Face> faceVec;
-    Volume volume;
-
     if (stream_in.is_open()) {
-      std::string line;
-      while (getline(stream_in, line)) {
-        std::istringstream iss(line);
-        std::string word;
-        iss >> word;
-        if (word == "v") {
-          std::vector<float> coordinates;
-          while (iss >> word) coordinates.push_back(std::stof(word));
-          if (coordinates.size() == 3) vertices.emplace_back(coordinates[0], coordinates[1], coordinates[2]);
-          else vertices.emplace_back();
-        }
+        std::string line;
+        while (getline(stream_in, line)) {
+            std::istringstream iss(line);
+            std::string word;
+            iss >> word;
+            if (word == "v") {
+                std::vector<float> coordinates;
+                while (iss >> word) coordinates.push_back(std::stof(word));
+                if (coordinates.size() == 3) vertices.emplace_back(coordinates[0], coordinates[1], coordinates[2]);
+                else vertices.emplace_back();
+            }
 
-        if (word == "f") {
-          std::vector<int> face;
-          while (iss >> word) face.emplace_back(std::stoi(word));
-          face_indices.push_back(face);
-          // 2-cells
-          Face face_cur;
-          face_cur = Face(face[0],face[1],face[2],face[3]);
-          faceVec.emplace_back(face_cur);
-        }
+            if (word == "f") {
+                std::vector<int> face;
+                while (iss >> word) face.emplace_back(std::stoi(word));
+                face_indices.push_back(face);
+                // 2-cells
+                Face face_cur;
+                face_cur = Face(face[0],face[1],face[2],face[3]);
+                faceVec.emplace_back(face_cur);
+            }
 
-      }
+        }
     }
     stream_in.close();
 
@@ -93,7 +74,6 @@ int main(int argc, const char * argv[]) {
     // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
     // that make up each face.
 
-    int count = 0;
     for (int i = 0; i < face_indices.size(); i++) {
 
         // the std::cout's are only for visualising the loop process
@@ -164,10 +144,39 @@ int main(int argc, const char * argv[]) {
         }
 
     }
+}
+
+int main(int argc, const char * argv[]) {
+  std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
+  std::string cube_test = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
+  std::string cube_test2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/cube2.obj";
+  std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
+  std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
+  std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
+  std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
+  std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
+  std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
+  
+  // ## Read OBJ file ##
+  // The vertices and faces are read and stored into vectors.
+
+
+    // where we store cells
+    std::vector<Dart> darts;
+
+
+    std::unordered_map<std::string, Vertex> vertexMap;
+    std::unordered_map<std::string, Edge> edgeMap;
+    std::vector<Face> faceVec;
+    Volume volume;
+
+    readObj(cube_test, vertexMap, edgeMap, faceVec, volume);
+
     std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
+    /*
     //    iterating over all value of vertexMap
     std::unordered_map<std::string, Vertex>:: iterator itr;
     std::cout << "\nAll Elements : \n";
@@ -178,7 +187,7 @@ int main(int argc, const char * argv[]) {
         // itr->second stores the value part
         std::cout << itr->first << "  \n" << itr->second.point << std::endl;
     }
-
+    */
   
   // ## Construct generalised map using the structures from Gmap.h ##
   
@@ -190,3 +199,4 @@ int main(int argc, const char * argv[]) {
   
   return 0;
 }
+

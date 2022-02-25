@@ -170,19 +170,23 @@ int main(int argc, const char * argv[]) {
       std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
   }
 
-    std::cout << "\nEdges : \n";
+  int countEdges = 0;
+  std::cout << "\nEdges : \n";
   for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
       // itrE works as a pointer to pair<string, double>
       // type itrE->first stores the key part  and
       // itrE->second stores the value part
-      std::cout << "key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
+      std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
+      countEdges++;
   }
 
   std::cout << "\nfaces : \n";
+
   for (auto i:faceVec) {
       std::cout << "the face vertices: ";
       for (auto j:i.face_vertices) {
           std::cout << j << " ";
+          if (j == i.face_vertices.back()) {std::cout << i.face_vertices.front();}
       }
       std::cout << "\n";
   }
@@ -190,9 +194,66 @@ int main(int argc, const char * argv[]) {
   std::cout << "\ndarts : \n";
 
   for (auto i:faceVec) {
-      std::cout << "the face vertices: ";
       for (auto j:i.face_vertices) {
-          std::cout << j << " ";
+
+          //std::cout << "face_indices[i][j]: " << face_indices[i][j] << "\n";
+
+          if (j == i.face_vertices.back()) {i.face_vertices.front();}
+      }
+  }
+
+  for (int i = 0; i < faceVec.size(); i++) {
+      //std::cout << "f" << i << " \n"; //this code keeps track which face we are
+      for (int j = 0; j < faceVec[i].face_vertices.size(); j++) {
+
+          //std::to_string()
+          if (face_indices[i][j]-1 == faceVec[i].face_vertices.back()) {
+              //std::cout << faceVec[i].face_vertices.front();
+              std::string origin_vS, end_vS, edgeS;
+              //origin_vS = std::to_string(face_indices[i][j]-1);
+              //end_vS = std::to_string(faceVec[i].face_vertices.front());
+              //edgeS = origin_vS + end_vS;
+
+              if ((face_indices[i][j]-1) > (faceVec[i].face_vertices.front())) {
+                  origin_vS = std::to_string(faceVec[i].face_vertices.front());
+                  end_vS = std::to_string(face_indices[i][j]-1);
+                  edgeS = origin_vS + end_vS;
+              }
+              else {
+                  origin_vS = std::to_string(face_indices[i][j]-1);
+                  end_vS = std::to_string(faceVec[i].face_vertices.front());
+                  edgeS = origin_vS + end_vS;
+              }
+
+              std::cout << "edgeS: " << edgeS << " ";
+
+              //this code finds the index value of the found key
+              std::cout << ", idx: " << distance(edgeMap.begin(),edgeMap.find(edgeS)) << " ";
+          }
+          else {
+              //std::cout << face_indices[i][j]-1 << " ";
+
+              std::string origin_vS, end_vS, edgeS;
+
+              if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
+                  origin_vS = std::to_string(face_indices[i][j+1]-1);
+                  end_vS = std::to_string(face_indices[i][j]-1);
+                  edgeS = origin_vS + end_vS;
+              }
+              else {
+                  origin_vS = std::to_string(face_indices[i][j]-1);
+                  end_vS = std::to_string(face_indices[i][j+1]-1);
+                  edgeS = origin_vS + end_vS;
+              }
+
+              std::cout << "edgeS: " << edgeS << " ";
+
+              //this code finds the index value of the found key
+              std::cout << ", idx: " << distance(edgeMap.begin(),edgeMap.find(edgeS)) << " ";
+
+
+          }
+
       }
       std::cout << "\n";
   }

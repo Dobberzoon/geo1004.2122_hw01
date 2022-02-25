@@ -117,23 +117,9 @@ struct Face {
 
   // face vertices
   std::vector<int> face_vertices;
-  int v0, v1, v2, v3;
 
   // also in string format for keys
   std::string faceS;
-
-  // constructor without arguments
-  //Face() {}
-
-  // constructor
-  // input vertices should be given in CCW
-  /*
-  Face(const std::vector<const int> &vertices) {
-      for (auto i:vertices) {
-          face_vertices.push_back(i);
-      }
-  }
-   */
 
   // function to convert point.x/y/z into concatenated string
   std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {

@@ -37,7 +37,18 @@ Then you could create and link Darts like:
 
 struct Dart {
   // involutions:
-  // ..
+  // functions to determine the darts 
+  int invols_a0(Dart da, Dart db)
+  {if (da.e_id==db.e_id && da.f_id==db.f_id && da.v_id!=db.v_id) {da.a0=db.id;}
+      return da.a0;}
+
+      int invols_a1(Dart da, Dart db)
+      {if (da.v_id==db.v_id && da.f_id==db.f_id && da.e_id!=db.e_id) {da.a1=db.id;}
+        return da.a1;}
+
+    int invols_a2(Dart da, Dart db)
+    {if (da.v_id==db.v_id && da.e_id==db.e_id && da.f_id!=db.f_id) {da.a2=db.id;}
+        return da.a2;}
 
   // cells:
   // ...

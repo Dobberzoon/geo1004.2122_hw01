@@ -168,7 +168,7 @@ int main(int argc, const char * argv[]) {
     std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
-    //    iterating over all value of umap
+    //    iterating over all value of vertexMap
     std::unordered_map<std::string, Vertex>:: iterator itr;
     std::cout << "\nAll Elements : \n";
     for (itr = vertexMap.begin(); itr != vertexMap.end(); itr++)

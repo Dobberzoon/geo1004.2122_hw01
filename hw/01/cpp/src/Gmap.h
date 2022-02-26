@@ -33,6 +33,8 @@ Then you could create and link Darts like:
   Dart* dart_b = new Dart();
 
   dart_a->a0 = dart_b;
+
+  dart_a->v =
 */
 
 struct Dart {
@@ -43,10 +45,31 @@ struct Dart {
   Dart* a3 = nullptr;
 
   // cells:
-  Dart* v = nullptr;
-  Dart* e = nullptr;
-  Dart* f = nullptr;
-  Dart* vo = nullptr;
+  Vertex* v = nullptr;
+  Edge* e = nullptr;
+  Face* f = nullptr;
+  Volume* vo = nullptr;
+
+  // constructor without arguments
+  Dart(){}
+
+  void invol_a0(Dart *dart_a, Dart *dart_b) {
+      if (dart_a->e==dart_b->e && dart_a->f==dart_b->f && dart_a->v!=dart_b->v) {
+          dart_a->a0 = dart_b;
+      }
+  }
+
+  void invol_a1(Dart *dart_a, Dart *dart_b) {
+      if (dart_a->v==dart_b->v && dart_a->f==dart_b->f && dart_a->e!=dart_b->e) {
+          dart_a->a1 = dart_b;
+      }
+  }
+
+  void invol_a2(Dart *dart_a, Dart *dart_b) {
+      if (dart_a->v==dart_b->v && dart_a->e==dart_b->e && dart_a->f!=dart_b->f) {
+          dart_a->a2 = dart_b;
+      }
+  }
 
 };
 
@@ -120,6 +143,18 @@ struct Face {
 
   // also in string format for keys
   std::string faceS;
+
+  /*
+  // constructor without arguments
+  Face(){}
+
+  // constructor with arguments
+  Face(const std::vector<int> &face_indices) {
+      for (auto i : face_indices) {
+          face_vertices.emplace_back(i);
+      }
+  }
+  */
 
   // function to convert point.x/y/z into concatenated string
   std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {

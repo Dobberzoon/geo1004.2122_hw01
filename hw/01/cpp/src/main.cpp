@@ -339,22 +339,6 @@ int main(int argc, const char * argv[]) {
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
 
-
-    /*
-     * code loop to visualise the vertexMap and its contents
-    //    iterating over all value of vertexMap
-    std::unordered_map<std::string, Vertex>:: iterator itrV;
-
-    std::cout << "\nAll Elements : \n";
-    std::cout << "\nVertices : \n";
-    for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
-        // itrV works as a pointer to pair<string, double>
-        // type itrV->first stores the key part  and
-        // itrV->second stores the value part
-        std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
-    }
-    */
-
     /*
      * code loop to visualise the edgeMap and its contents
     int countEdges = 0;
@@ -388,23 +372,28 @@ int main(int argc, const char * argv[]) {
 
     std::cout << "size of darts: " << darts.size() << "\n\n";
 
-
-
-
-
+    // loop to visualise the contents of the combinatorial structure part of the gmap
     int countDarts = 0;
     for (auto i: darts) {
-        countDarts++;
-        //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
-        //std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
+    countDarts++;
+    //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
+    std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
     }
-  
-  // ## Output generalised map to CSV ##
 
-  // ## Create triangles from the darts ##
+    int countVertices = 0;
+    for (auto i: vertexMap) {
+        countVertices++;
+        std::cout << "Vertex " << countVertices << ":\tdart\t" << i.second.dart << "\n";
+    }
 
-  // ## Write triangles to obj ##
-  
-  return 0;
+    // ## Output generalised map to CSV ##
+
+
+
+    // ## Create triangles from the darts ##
+
+    // ## Write triangles to obj ##
+
+    return 0;
 }
 

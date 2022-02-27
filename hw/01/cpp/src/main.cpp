@@ -113,7 +113,185 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
     }
 }
 
-void generateGmap()
+void initDartsCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
+                    std::unordered_map<std::string, Edge> &edgeMap, std::vector<Face> &faceVec, Volume &volume,
+                    std::vector<Dart*> &darts) {
+
+    int countDart = 0;
+    for (int i = 0; i < faceVec.size(); i++) {
+        //std::cout << "f" << i << " \n"; //this code keeps track which face we are
+
+        for (int j = 0; j < faceVec[i].face_vertices.size(); j++) {
+
+            if (face_indices[i][j]-1 == faceVec[i].face_vertices.back()) {
+                //std::cout << faceVec[i].face_vertices.front();
+                std::string origin_vS, end_vS, edgeS;
+                //origin_vS = std::to_string(face_indices[i][j]-1);
+                //end_vS = std::to_string(faceVec[i].face_vertices.front());
+                //edgeS = origin_vS + end_vS;
+
+                if ((face_indices[i][j]-1) > (faceVec[i].face_vertices.front())) {
+                    origin_vS = std::to_string(faceVec[i].face_vertices.front());
+                    end_vS = std::to_string(face_indices[i][j]-1);
+                    edgeS = origin_vS + end_vS;
+
+                    // vertex track
+                    countDart++;
+                    //construct first dart
+                    Dart* dart_a = new Dart();
+                    // assign vertex
+                    dart_a->v = &vertices[face_indices[i][j]-1];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
+                    dart_a->e = &e_dart_a->second;
+                    // assign face
+                    dart_a->f = &faceVec[i];
+                    // assign volume
+                    dart_a->vo = &volume;
+
+                    darts.emplace_back(dart_a);
+                    //construct second dart
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
+
+                    countDart++;
+                    Dart* dart_b = new Dart();
+                    // assign vertex
+                    dart_b->v = &vertices[faceVec[i].face_vertices.front()];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
+                    dart_b->e = &e_dart_b->second;
+                    // assign face
+                    dart_b->f = &faceVec[i];
+                    // assign volume
+                    dart_b->vo = &volume;
+                    darts.emplace_back(dart_b);
+
+                    // edge track
+
+                    std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
+
+                }
+                else {
+                    origin_vS = std::to_string(face_indices[i][j]-1);
+                    end_vS = std::to_string(faceVec[i].face_vertices.front());
+                    edgeS = origin_vS + end_vS;
+
+                    // vertex track
+                    countDart++;
+                    //construct first dart
+                    Dart* dart_a = new Dart();
+                    // assign vertex
+                    dart_a->v = &vertices[face_indices[i][j]-1];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
+                    dart_a->e = &e_dart_a->second;
+                    // assign face
+                    dart_a->f = &faceVec[i];
+                    // assign volume
+                    dart_a->vo = &volume;
+
+                    darts.emplace_back(dart_a);
+                    //construct second dart
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
+                    countDart++;
+                    Dart* dart_b = new Dart();
+                    // assign vertex
+                    dart_b->v = &vertices[faceVec[i].face_vertices.front()];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
+                    dart_b->e = &e_dart_b->second;
+                    // assign face
+                    dart_b->f = &faceVec[i];
+                    // assign volume
+                    dart_b->vo = &volume;
+                    darts.emplace_back(dart_b);
+                    std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
+                    // edge track
+                }
+            }
+            else {
+                std::string origin_vS, end_vS, edgeS;
+
+                if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
+                    origin_vS = std::to_string(face_indices[i][j+1]-1);
+                    end_vS = std::to_string(face_indices[i][j]-1);
+                    edgeS = origin_vS + end_vS;
+
+                    // vertex track
+                    countDart++;
+                    //construct first dart
+                    Dart* dart_a = new Dart();
+                    // assign vertex
+                    dart_a->v = &vertices[face_indices[i][j]-1];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
+                    dart_a->e = &e_dart_a->second;
+                    // assign face
+                    dart_a->f = &faceVec[i];
+                    // assign volume
+                    dart_a->vo = &volume;
+                    darts.emplace_back(dart_a);
+                    //construct second dart
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
+                    countDart++;
+                    Dart* dart_b = new Dart();
+                    // assign vertex
+                    dart_b->v = &vertices[face_indices[i][j+1]-1];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
+                    dart_b->e = &e_dart_b->second;
+                    // assign face
+                    dart_b->f = &faceVec[i];
+                    // assign volume
+                    dart_b->vo = &volume;
+                    darts.emplace_back(dart_b);
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
+
+                }
+                else {
+                    origin_vS = std::to_string(face_indices[i][j]-1);
+                    end_vS = std::to_string(face_indices[i][j+1]-1);
+                    edgeS = origin_vS + end_vS;
+
+                    // vertex track
+                    countDart++;
+                    //construct first dart
+                    Dart* dart_a = new Dart();
+                    // assign vertex
+                    dart_a->v = &vertices[face_indices[i][j]-1];
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
+                    //std::cout << "edge dart_a: " << e_dart_a->second.edgeS;
+                    dart_a->e = &e_dart_a->second;
+                    // assign face
+                    dart_a->f = &faceVec[i];
+                    // assign volume
+                    dart_a->vo = &volume;
+                    darts.emplace_back(dart_a);
+                    //construct second dart
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
+                    countDart++;
+                    Dart* dart_b = new Dart();
+
+                    // assign vertex
+                    dart_b->v = &vertices[face_indices[i][j+1]-1];
+
+                    // assign edge
+                    std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
+                    dart_b->e = &e_dart_b->second;
+
+                    // assign face
+                    dart_b->f = &faceVec[i];
+                    // assign volume
+                    dart_b->vo = &volume;
+                    darts.emplace_back(dart_b);
+                    std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
+                }
+            }
+        }
+        std::cout << "\n";
+    }
+}
 
 int main(int argc, const char * argv[]) {
   std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
@@ -195,175 +373,28 @@ int main(int argc, const char * argv[]) {
 
   std::cout << "\ndarts : \n";
 
-  int countDart = 0;
-
-  for (int i = 0; i < faceVec.size(); i++) {
-      //std::cout << "f" << i << " \n"; //this code keeps track which face we are
-
-      for (int j = 0; j < faceVec[i].face_vertices.size(); j++) {
-
-          if (face_indices[i][j]-1 == faceVec[i].face_vertices.back()) {
-              //std::cout << faceVec[i].face_vertices.front();
-              std::string origin_vS, end_vS, edgeS;
-              //origin_vS = std::to_string(face_indices[i][j]-1);
-              //end_vS = std::to_string(faceVec[i].face_vertices.front());
-              //edgeS = origin_vS + end_vS;
-
-              if ((face_indices[i][j]-1) > (faceVec[i].face_vertices.front())) {
-                  origin_vS = std::to_string(faceVec[i].face_vertices.front());
-                  end_vS = std::to_string(face_indices[i][j]-1);
-                  edgeS = origin_vS + end_vS;
-
-                  // vertex track
-                  countDart++;
-                  //construct first dart
-                  Dart* dart_a = new Dart();
-                  // assign vertex
-                  dart_a->v = &vertices[face_indices[i][j]-1];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
-                  dart_a->e = &e_dart_a->second;
-                  // assign face
-                  dart_a->f = &faceVec[i];
-
-                  darts.emplace_back(dart_a);
-                  //construct second dart
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-
-                  countDart++;
-                  Dart* dart_b = new Dart();
-                  // assign vertex
-                  dart_b->v = &vertices[faceVec[i].face_vertices.front()];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
-                  dart_b->e = &e_dart_b->second;
-                  // assign face
-                  dart_b->f = &faceVec[i];
-                  darts.emplace_back(dart_b);
-
-                  // edge track
-
-                  std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
-
-              }
-              else {
-                  origin_vS = std::to_string(face_indices[i][j]-1);
-                  end_vS = std::to_string(faceVec[i].face_vertices.front());
-                  edgeS = origin_vS + end_vS;
-
-                  // vertex track
-                  countDart++;
-                  //construct first dart
-                  Dart* dart_a = new Dart();
-                  // assign vertex
-                  dart_a->v = &vertices[face_indices[i][j]-1];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
-                  dart_a->e = &e_dart_a->second;
-                  // assign face
-                  dart_a->f = &faceVec[i];
-
-                  darts.emplace_back(dart_a);
-                  //construct second dart
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                  countDart++;
-                  Dart* dart_b = new Dart();
-                  // assign vertex
-                  dart_b->v = &vertices[faceVec[i].face_vertices.front()];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
-                  dart_b->e = &e_dart_b->second;
-                  // assign face
-                  dart_b->f = &faceVec[i];
-                  darts.emplace_back(dart_b);
-                  std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
-                  // edge track
-              }
-          }
-          else {
-              std::string origin_vS, end_vS, edgeS;
-
-              if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
-                  origin_vS = std::to_string(face_indices[i][j+1]-1);
-                  end_vS = std::to_string(face_indices[i][j]-1);
-                  edgeS = origin_vS + end_vS;
-
-                  // vertex track
-                  countDart++;
-                  //construct first dart
-                  Dart* dart_a = new Dart();
-                  // assign vertex
-                  dart_a->v = &vertices[face_indices[i][j]-1];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
-                  dart_a->e = &e_dart_a->second;
-                  // assign face
-                  dart_a->f = &faceVec[i];
-                  darts.emplace_back(dart_a);
-                  //construct second dart
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                  countDart++;
-                  Dart* dart_b = new Dart();
-                  // assign vertex
-                  dart_b->v = &vertices[face_indices[i][j+1]-1];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
-                  dart_b->e = &e_dart_b->second;
-                  // assign face
-                  dart_b->f = &faceVec[i];
-                  darts.emplace_back(dart_b);
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
-
-              }
-              else {
-                  origin_vS = std::to_string(face_indices[i][j]-1);
-                  end_vS = std::to_string(face_indices[i][j+1]-1);
-                  edgeS = origin_vS + end_vS;
-
-                  // vertex track
-                  countDart++;
-                  //construct first dart
-                  Dart* dart_a = new Dart();
-                  // assign vertex
-                  dart_a->v = &vertices[face_indices[i][j]-1];
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
-                  //std::cout << "edge dart_a: " << e_dart_a->second.edgeS;
-                  dart_a->e = &e_dart_a->second;
-                  // assign face
-                  dart_a->f = &faceVec[i];
-                  darts.emplace_back(dart_a);
-                  //construct second dart
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                  countDart++;
-                  Dart* dart_b = new Dart();
-
-                  // assign vertex
-                  dart_b->v = &vertices[face_indices[i][j+1]-1];
-
-                  // assign edge
-                  std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
-                  dart_b->e = &e_dart_b->second;
-
-                  // assign face
-                  dart_b->f = &faceVec[i];
-                  darts.emplace_back(dart_b);
-                  std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
-              }
-          }
-      }
-      std::cout << "\n";
-  }
-
-
+  initDartsCells(vertices,face_indices,edgeMap,faceVec,volume,darts);
 
   std::cout << "size of darts: " << darts.size() << "\n\n";
 
-  int countDarts = 0;
+
   for (auto i: darts) {
-      countDarts++;
-      std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << "\n";
+      for (auto j: darts) {
+          i->invol_a0(i,j);
+          i->invol_a1(i,j);
+          i->invol_a2(i,j);
+          //i->invol_a3(i,darts[j]);
+      }
   }
+
+
+
+    int countDarts = 0;
+    for (auto i: darts) {
+        countDarts++;
+        //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
+        //std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
+    }
   
   // ## Output generalised map to CSV ##
 

@@ -54,19 +54,23 @@ struct Dart {
   Dart(){}
 
   void invol_a0(Dart *dart_a, Dart *dart_b) {
-      if (dart_a->e==dart_b->e && dart_a->f==dart_b->f && dart_a->v!=dart_b->v) {
+      if ((dart_a->e==dart_b->e) && (dart_a->f==dart_b->f) && (dart_a->v!=dart_b->v)) {
+          //std::cout << "involution a0 found\n";
           dart_a->a0 = dart_b;
+          //return a0;
       }
   }
 
   void invol_a1(Dart *dart_a, Dart *dart_b) {
       if (dart_a->v==dart_b->v && dart_a->f==dart_b->f && dart_a->e!=dart_b->e) {
+          //std::cout << "involution a1 found\n";
           dart_a->a1 = dart_b;
       }
   }
 
   void invol_a2(Dart *dart_a, Dart *dart_b) {
       if (dart_a->v==dart_b->v && dart_a->e==dart_b->e && dart_a->f!=dart_b->f) {
+          //std::cout << "involution a2 found\n";
           dart_a->a2 = dart_b;
       }
   }

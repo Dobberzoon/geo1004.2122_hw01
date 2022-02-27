@@ -1,2 +1,4 @@
 hw/01/cpp/cmake-build-release/*
 hw/01/cpp/cmake-build-debug/*
+hw/01/cpp/cmake-build-debug/Testing/Temporary/LastTest.log
+

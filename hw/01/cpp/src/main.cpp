@@ -376,14 +376,58 @@ int main(int argc, const char * argv[]) {
     int countDarts = 0;
     for (auto i: darts) {
     countDarts++;
-    //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
     std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
+    std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
     }
 
     int countVertices = 0;
     for (auto i: vertexMap) {
         countVertices++;
-        std::cout << "Vertex " << countVertices << ":\tdart\t" << i.second.dart << "\n";
+
+        for (auto j:darts) {
+            //std::cout << "i.second.xyz: " << i.second.xyz << ", j->v->xyz: " << j->v->xyz << "\n";
+            if (i.second.xyz_tostring(i.second.point.x,i.second.point.y,i.second.point.z) == j->v->xyz_tostring(j->v->point.x,j->v->point.y,j->v->point.z)) {
+                //std::cout << "dart found for this vertex: " << i.first << "\n";
+                //std::cout << ", j->v->xyz: " << j->v->dart << "\n";
+                //std::cout << ", j: " << j << "\n";
+                //i->second->dart = j;
+
+            }
+        }
+        //std::cout << "Vertex " << countVertices << ":\tdart\t" << i.second.dart << "\n";
+    }
+
+
+    std::unordered_map<std::string, Vertex>:: iterator itrV;
+
+    // Generate Vertex Embedding
+    for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
+        for (auto j:darts) {
+            if (itrV->second.xyz_tostring(itrV->second.point.x,itrV->second.point.y,itrV->second.point.z) == j->v->xyz_tostring(j->v->point.x,j->v->point.y,j->v->point.z)) {
+                itrV->second.dart = j;
+                break;
+            }
+        }
+    }
+
+    for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
+        std::cout << "key: " << itrV->first << ", value: " << itrV->second.dart << "\n ";
+    }
+
+
+    // Generate Edge Embedding
+    std::unordered_map<std::string, Edge>:: iterator itrE;
+    for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
+        for (auto j:darts) {
+            if (itrE->second.edgeS == j->e->edgeS) {
+                itrE->second.dart = j;
+                break;
+            }
+        }
+    }
+
+    for (auto i : edgeMap) {
+        std::cout << "edge " << i.first << ": " << i.second.dart << "\n";
     }
 
     // ## Output generalised map to CSV ##

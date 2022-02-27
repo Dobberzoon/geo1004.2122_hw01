@@ -113,7 +113,7 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
     }
 }
 
-void initDartsCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
+void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
                     std::unordered_map<std::string, Edge> &edgeMap, std::vector<Face> &faceVec, Volume &volume,
                     std::vector<Dart*> &darts) {
 
@@ -291,101 +291,104 @@ void initDartsCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>>
         }
         std::cout << "\n";
     }
+
+    // Perform involutions for all darts
+    for (auto i: darts) {
+        for (auto j: darts) {
+            i->invol_a0(i,j);
+            i->invol_a1(i,j);
+            i->invol_a2(i,j);
+        }
+    }
+
 }
 
 int main(int argc, const char * argv[]) {
-  std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
-  std::string cube_test = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
-  std::string cube_test2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/cube2.obj";
-  std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
-  std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
-  std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
-  std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
-  std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
-  std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
-  
-  // ## Read OBJ file ##
-  // The vertices and faces are read and stored into vectors.
 
-  std::vector<Vertex> vertices;
-  std::vector<std::vector<int>> face_indices;
+    std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
+    std::string cube_test = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
+    std::string cube_test2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/cube2.obj";
+    std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
+    std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
+    std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
+    std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
+    std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
+    std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
 
-  // ## Construct generalised map using the structures from Gmap.h ##
+    // ## Read OBJ file ##
+    // The vertices and faces are read and stored into vectors.
 
-  // where we store darts and cells
-  std::vector<Dart*> darts;
-  std::unordered_map<std::string, Vertex> vertexMap;
-  std::unordered_map<std::string, Edge> edgeMap;
-  std::vector<Face> faceVec;
-  Volume volume;
+    std::vector<Vertex> vertices;
+    std::vector<std::vector<int>> face_indices;
 
-  readObj(cube_test, vertices, face_indices);
+    // ## Construct generalised map using the structures from Gmap.h ##
 
-  extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
+    // where we store darts and cells
+    std::vector<Dart*> darts;
+    std::unordered_map<std::string, Vertex> vertexMap;
+    std::unordered_map<std::string, Edge> edgeMap;
+    std::vector<Face> faceVec;
+    Volume volume;
 
-  std::cout << "\nvertexMap.size() = " << vertexMap.size() << "\n";
-  std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
-  std::cout << "faceVec.size() = " << faceVec.size() << "\n";
+    readObj(cube_test, vertices, face_indices);
 
+    extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
 
-
-  /*
-   * code loop to visualise the vertexMap and its contents
-  //    iterating over all value of vertexMap
-  std::unordered_map<std::string, Vertex>:: iterator itrV;
-
-  std::cout << "\nAll Elements : \n";
-  std::cout << "\nVertices : \n";
-  for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
-      // itrV works as a pointer to pair<string, double>
-      // type itrV->first stores the key part  and
-      // itrV->second stores the value part
-      std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
-  }
-  */
-
-  /*
-   * code loop to visualise the edgeMap and its contents
-  int countEdges = 0;
-  std::unordered_map<std::string, Edge>:: iterator itrE;
-  std::cout << "\nEdges : \n";
-  for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
-      // itrE works as a pointer to pair<string, double>
-      // type itrE->first stores the key part  and
-      // itrE->second stores the value part
-      std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
-      countEdges++;
-  }
-  */
-
-  /*
-   * code loop to visualise the contents of faceVec, more exact: to reveal how to access its vertices information
-  std::cout << "\nfaces : \n";
-  for (auto i:faceVec) {
-      std::cout << "the face vertices: ";
-      for (auto j:i.face_vertices) {
-          std::cout << j << " ";
-          if (j == i.face_vertices.back()) {std::cout << i.face_vertices.front();}
-      }
-      std::cout << "\n";
-  }
-  */
-
-  std::cout << "\ndarts : \n";
-
-  initDartsCells(vertices,face_indices,edgeMap,faceVec,volume,darts);
-
-  std::cout << "size of darts: " << darts.size() << "\n\n";
+    std::cout << "\nvertexMap.size() = " << vertexMap.size() << "\n";
+    std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
+    std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
 
-  for (auto i: darts) {
-      for (auto j: darts) {
-          i->invol_a0(i,j);
-          i->invol_a1(i,j);
-          i->invol_a2(i,j);
-          //i->invol_a3(i,darts[j]);
-      }
-  }
+
+    /*
+     * code loop to visualise the vertexMap and its contents
+    //    iterating over all value of vertexMap
+    std::unordered_map<std::string, Vertex>:: iterator itrV;
+
+    std::cout << "\nAll Elements : \n";
+    std::cout << "\nVertices : \n";
+    for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
+        // itrV works as a pointer to pair<string, double>
+        // type itrV->first stores the key part  and
+        // itrV->second stores the value part
+        std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
+    }
+    */
+
+    /*
+     * code loop to visualise the edgeMap and its contents
+    int countEdges = 0;
+    std::unordered_map<std::string, Edge>:: iterator itrE;
+    std::cout << "\nEdges : \n";
+    for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
+        // itrE works as a pointer to pair<string, double>
+        // type itrE->first stores the key part  and
+        // itrE->second stores the value part
+        std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
+        countEdges++;
+    }
+    */
+
+    /*
+     * code loop to visualise the contents of faceVec, more exact: to reveal how to access its vertices information
+    std::cout << "\nfaces : \n";
+    for (auto i:faceVec) {
+        std::cout << "the face vertices: ";
+        for (auto j:i.face_vertices) {
+            std::cout << j << " ";
+            if (j == i.face_vertices.back()) {std::cout << i.face_vertices.front();}
+        }
+        std::cout << "\n";
+    }
+    */
+
+    std::cout << "\ndarts : \n";
+
+    initCombiStruct(vertices,face_indices,edgeMap,faceVec,volume,darts);
+
+    std::cout << "size of darts: " << darts.size() << "\n\n";
+
+
 
 
 

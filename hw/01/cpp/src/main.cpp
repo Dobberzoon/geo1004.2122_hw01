@@ -430,6 +430,27 @@ int main(int argc, const char * argv[]) {
         std::cout << "edge " << i.first << ": " << i.second.dart << "\n";
     }
 
+    // Generate Face Embedding
+
+    std::vector<Face>::iterator itrF;
+    for (itrF = faceVec.begin(); itrF != faceVec.end(); itrF++) {
+        for (auto j : darts) {
+            if (itrF->face_vertices == j->f->face_vertices) {
+                itrF->dart = j;
+            }
+        }
+    }
+
+    int countFace = 0;
+    for (auto i : faceVec) {
+        countFace++;
+        std::cout << "face dart" << countFace << ": " << i.dart << "\n";
+    }
+
+    // Volume embedding, as we can assume there is only one volume we simply assign one arbitrary darts (ie the first)
+    volume.dart = darts[0];
+
+    std::cout << "volume dart: " << volume.dart << "\n";
     // ## Output generalised map to CSV ##
 
 

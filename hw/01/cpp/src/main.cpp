@@ -50,12 +50,12 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
 
 
         // the std::cout's are only for visualising the loop process
-        std::cout << "( ";
+        //std::cout << "( ";
 
 
         // 0-cells
         for (int j = 0; j < face_indices[i].size(); j++) {
-            std::cout << face_indices[i][j] << " ";
+            //std::cout << face_indices[i][j] << " ";
 
             // Initialise variables
             Vertex vertex_cur;
@@ -66,20 +66,17 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
             vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
 
             // For storing the cells, we use unordered_map, this will prevent multiple addition of same cells
-
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
             vertexMap.insert({xyz, vertex_cur});
-            //std::cout << "vertex_cur: " << vertex_cur.point << "\n";
-            //std::cout << "vertex_cur STRING: " << xyz << "\n";
-            if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
+
+            // visualising first vertex repetition
+            //if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
 
             // 1-cells
             Edge edge_cur;
             std::string edgeS;
 
             if (face_indices[i][j] == face_indices[i].back()) {
-                //std::cout << "This should be the last: " << face_indices[i][0] - 1  << "\n";
-                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][0] - 1 << "\n";
                 if ((face_indices[i][j]-1) > (face_indices[i][0]-1)) {
                     edge_cur = Edge(face_indices[i][0]-1, face_indices[i][j]-1);
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
@@ -90,12 +87,9 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
                     edgeMap.insert({edgeS, edge_cur});
                 }
-
-                //std::cout << "edge in string: " << edgeS << "\n";
             }
 
             else {
-                //std::cout << "1st vertex: " << face_indices[i][j]-1 << " , second vertex: " << face_indices[i][j+1]-1 << "\n";
                 if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
                     edge_cur = Edge(face_indices[i][j+1]-1, face_indices[i][j]-1);
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
@@ -112,15 +106,14 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
             face_cur.face_vertices.push_back(face_indices[i][j]-1);
 
             if (j == (face_indices[i].size() - 1)) {
-                //std::cout << "end is reached! \n";
-                //std::cout << "size face_cur.vertices: " << face_cur.face_vertices.size() << "\n";
-                //std::cout << "face_cur.vertices: " << face_cur.face_vertices[0] << ", " << face_cur.face_vertices[1] << ", " << face_cur.face_vertices[2] << ", " << face_cur.face_vertices[3] << "\n";
                 faceVec.push_back(face_cur);
             }
         }
-        std::cout << " ) \n";
+        //std::cout << " ) \n";
     }
 }
+
+void generateGmap()
 
 int main(int argc, const char * argv[]) {
   std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus.obj";
@@ -152,17 +145,18 @@ int main(int argc, const char * argv[]) {
 
   extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
 
-  std::cout << "vertexMap.size() = " << vertexMap.size() << "\n";
+  std::cout << "\nvertexMap.size() = " << vertexMap.size() << "\n";
   std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
   std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
 
 
+  /*
+   * code loop to visualise the vertexMap and its contents
   //    iterating over all value of vertexMap
   std::unordered_map<std::string, Vertex>:: iterator itrV;
-  std::unordered_map<std::string, Edge>:: iterator itrE;
-  std::cout << "\nAll Elements : \n";
 
+  std::cout << "\nAll Elements : \n";
   std::cout << "\nVertices : \n";
   for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
       // itrV works as a pointer to pair<string, double>
@@ -170,8 +164,12 @@ int main(int argc, const char * argv[]) {
       // itrV->second stores the value part
       std::cout << "key: " << itrV->first << ", value: " << itrV->second.point << std::endl;
   }
+  */
 
+  /*
+   * code loop to visualise the edgeMap and its contents
   int countEdges = 0;
+  std::unordered_map<std::string, Edge>:: iterator itrE;
   std::cout << "\nEdges : \n";
   for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
       // itrE works as a pointer to pair<string, double>
@@ -180,9 +178,11 @@ int main(int argc, const char * argv[]) {
       std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
       countEdges++;
   }
+  */
 
+  /*
+   * code loop to visualise the contents of faceVec, more exact: to reveal how to access its vertices information
   std::cout << "\nfaces : \n";
-
   for (auto i:faceVec) {
       std::cout << "the face vertices: ";
       for (auto j:i.face_vertices) {
@@ -191,25 +191,17 @@ int main(int argc, const char * argv[]) {
       }
       std::cout << "\n";
   }
+  */
 
   std::cout << "\ndarts : \n";
 
   int countDart = 0;
 
   for (int i = 0; i < faceVec.size(); i++) {
-      std::cout << "f" << i << " \n"; //this code keeps track which face we are
-      /*
-      Face faceCur;
-      //faceCur = faceCur(face_indices[i]);
+      //std::cout << "f" << i << " \n"; //this code keeps track which face we are
 
-      std::cout << "print all indices: \n";
-      for (int k = 0; k < face_indices[i]; k++){
-          std::cout << " " << face_indices[i][k];
-      }
-      */
       for (int j = 0; j < faceVec[i].face_vertices.size(); j++) {
 
-          //std::to_string()
           if (face_indices[i][j]-1 == faceVec[i].face_vertices.back()) {
               //std::cout << faceVec[i].face_vertices.front();
               std::string origin_vS, end_vS, edgeS;
@@ -285,19 +277,10 @@ int main(int argc, const char * argv[]) {
                   dart_b->f = &faceVec[i];
                   darts.emplace_back(dart_b);
                   std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
-
                   // edge track
-
               }
-
-              //std::cout << "edgeS: " << edgeS << " ";
-
-              //this code finds the index value of the found key
-              //std::cout << ", idx: " << distance(edgeMap.begin(),edgeMap.find(edgeS)) << " ";
           }
           else {
-              //std::cout << face_indices[i][j]-1 << " ";
-
               std::string origin_vS, end_vS, edgeS;
 
               if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
@@ -331,8 +314,6 @@ int main(int argc, const char * argv[]) {
                   darts.emplace_back(dart_b);
                   std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
 
-                  // edge track
-
               }
               else {
                   origin_vS = std::to_string(face_indices[i][j]-1);
@@ -356,47 +337,32 @@ int main(int argc, const char * argv[]) {
                   std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
                   countDart++;
                   Dart* dart_b = new Dart();
+
                   // assign vertex
                   dart_b->v = &vertices[face_indices[i][j+1]-1];
+
                   // assign edge
                   std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
                   dart_b->e = &e_dart_b->second;
+
                   // assign face
                   dart_b->f = &faceVec[i];
                   darts.emplace_back(dart_b);
                   std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
-
-                  // edge track
-
-
               }
-
-              //std::cout << "edgeS: " << edgeS << " ";
-
-              //this code finds the index value of the found key
-              //std::cout << ", idx: " << distance(edgeMap.begin(),edgeMap.find(edgeS)) << " ";
-
-
           }
-
       }
       std::cout << "\n";
   }
 
-  std::cout << "size of darts: " << darts.size() << "\n";
+
+
+  std::cout << "size of darts: " << darts.size() << "\n\n";
 
   int countDarts = 0;
   for (auto i: darts) {
       countDarts++;
-      std::cout << "dart " << countDarts << ": \t" << i->v->point << ", e: \t" << i->e->edgeS << ", f: \t" << i->f << "\n";
-  }
-
-  for (auto i:faceVec) {
-      std::cout << "face vertices: ";
-      for (auto j: i.face_vertices) {
-          std::cout << " " << j;
-      }
-      std::cout << "\n";
+      std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << "\n";
   }
   
   // ## Output generalised map to CSV ##

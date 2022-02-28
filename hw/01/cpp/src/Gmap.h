@@ -24,87 +24,109 @@ One way to do this is by using pointers. eg. define a member on the dart struct 
 
     // cells:
     // ...
-
+  
   };
 
 Then you could create and link Darts like:
-
+  
   Dart* dart_a = new Dart();
   Dart* dart_b = new Dart();
 
   dart_a->a0 = dart_b;
+
+  dart_a->v =
 */
 
 struct Dart {
-    // involutions:
-    Dart* a0 = nullptr;
-    Dart* a1 = nullptr;
-    Dart* a2 = nullptr;
-    Dart* a3 = nullptr;
+  // involutions:
+  Dart* a0 = nullptr;
+  Dart* a1 = nullptr;
+  Dart* a2 = nullptr;
+  Dart* a3 = nullptr;
 
-    // cells:
-    Dart* v = nullptr;
-    Dart* e = nullptr;
-    Dart* f = nullptr;
-    Dart* vo = nullptr;
+  // cells:
+  Vertex* v = nullptr;
+  Edge* e = nullptr;
+  Face* f = nullptr;
+  Volume* vo = nullptr;
+
+  // constructor without arguments
+  Dart(){}
+
+  void invol_a0(Dart *dart_a, Dart *dart_b) {
+      if ((dart_a->e==dart_b->e) && (dart_a->f==dart_b->f) && (dart_a->v!=dart_b->v)) {
+          //std::cout << "involution a0 found\n";
+          dart_a->a0 = dart_b;
+          //return a0;
+      }
+  }
+
+  void invol_a1(Dart *dart_a, Dart *dart_b) {
+      if (dart_a->v==dart_b->v && dart_a->f==dart_b->f && dart_a->e!=dart_b->e) {
+          //std::cout << "involution a1 found\n";
+          dart_a->a1 = dart_b;
+      }
+  }
+
+  void invol_a2(Dart *dart_a, Dart *dart_b) {
+      if (dart_a->v==dart_b->v && dart_a->e==dart_b->e && dart_a->f!=dart_b->f) {
+          //std::cout << "involution a2 found\n";
+          dart_a->a2 = dart_b;
+      }
+  }
 
 };
 
 struct Vertex {
-    // the coordinates of this vertex:
-    Point point;
+  // the coordinates of this vertex:
+  Point point;
 
-    // also in string format for making keys
-    std::string xyz;
+  // also in string format for making keys
+  std::string xyz;
 
-    // constructor without arguments
-    Vertex() : point(Point()) {}
+  // constructor without arguments
+  Vertex() : point(Point()) {}
 
-    // constructor with x,y,z arguments to immediately initialise the point member on this Vertex.
-    Vertex(const double &x, const double &y, const double &z) : point(Point(x,y,z)) {}
+  // constructor with x,y,z arguments to immediately initialise the point member on this Vertex.
+  Vertex(const double &x, const double &y, const double &z) : point(Point(x,y,z)) {}
 
-    // a dart incident to this Vertex:
-    Dart* dart = nullptr;
+  // a dart incident to this Vertex:
+  Dart* dart = nullptr;
 
-    /*
-    bool operator==(const Vertex& v) const {
-        return point.x == v.point.x && point.y == v.point.y && point.z == v.point.z;
-    }
-     */
-
-    // function to convert point.x/y/z into concatenated string
-    std::string xyz_tostring(const double &x, const double &y, const double &z) {
-        std::string xS, yS, zS;
-        xS = std::to_string(x);
-        yS = std::to_string(y);
-        zS = std::to_string(z);
-        xyz = xS + yS + zS;
-        return xyz;
-    }
+  // function to convert point.x/y/z into concatenated string
+  std::string xyz_tostring(const double &x, const double &y, const double &z) {
+      std::string xS, yS, zS;
+      xS = std::to_string(x);
+      yS = std::to_string(y);
+      zS = std::to_string(z);
+      xyz = xS + yS + zS;
+      return xyz;
+  }
 
 };
 
 struct Edge {
-    // a dart incident to this Edge:
-    Dart* dart = nullptr;
+  // a dart incident to this Edge:
+  Dart* dart = nullptr;
 
-    // begin and end vertex of edge
-    int origin_v, end_v;
+  // begin and end vertex of edge
+  int origin_v, end_v;
 
-    // also in string format for keys
-    std::string edgeS;
+  // also in string format for keys
+  std::string edgeS;
 
-    // constructor without arguments
-    Edge(){}
+  // constructor without arguments
+  Edge(){}
 
-    // constructor
-    Edge(const int &origin_v, const int &end_v) {
-        this->origin_v = origin_v;
-        this->end_v = end_v;
-    }
+  // constructor
+  Edge(const int &origin_v, const int &end_v) {
+      this->origin_v = origin_v;
+      this->end_v = end_v;
+  }
 
-    // function to convert point.x/y/z into concatenated string
-    std::string edge_tostring(const int &origin_v, const int &end_v) {
+  // function to convert point.x/y/z into concatenated string
+  std::string edge_tostring(const int &origin_v, const int &end_v) {
+
         std::string origin_vS, end_vS;
         origin_vS = std::to_string(origin_v);
         end_vS = std::to_string(end_v);
@@ -112,43 +134,49 @@ struct Edge {
         return edgeS;
     }
 
-    // function to compute the barycenter for this Edge (needed for triangulation output):
-    // Point barycenter() {}
+  // function to compute the barycenter for this Edge (needed for triangulation output):
+  // Point barycenter() {}
 };
 
 struct Face {
-    // a dart incident to this Face:
-    Dart* dart = nullptr;
+  // a dart incident to this Face:
+  Dart* dart = nullptr;
 
-    // face vertices
-    int v0, v1, v2, v3;
+  // face vertices
+  std::vector<int> face_vertices;
 
-    // constructor
-    // input vertices should be given in CCW
-    Face(const int &v0, const int &v1, const int &v2, const int &v3) {
-        this->v0 = v0;
-        this->v1 = v1;
-        this->v2 = v2;
-        this->v3 = v3;
-    }
+  // also in string format for keys
+  std::string faceS;
 
-    // function to compute the barycenter for this Face (needed for triangulation output):
-    // Point barycenter() {}
+  /*
+  // constructor without arguments
+  Face(){}
+
+  // constructor with arguments
+  Face(const std::vector<int> &face_indices) {
+      for (auto i : face_indices) {
+          face_vertices.emplace_back(i);
+      }
+  }
+  */
+
+  // function to convert point.x/y/z into concatenated string
+  std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {
+
+      std::string v0S, v1S, v2S, v3S;
+
+      v0S = std::to_string(v0); v1S = std::to_string(v1); v2S = std::to_string(v2); v3S = std::to_string(v3);
+      faceS = v0S + v1S + v2S + v3S;
+      return faceS;
+  }
+  // function to compute the barycenter for this Face (needed for triangulation output):
+  // Point barycenter() {}
 
 };
 
 struct Volume {
-    // a dart incident to this Volume:
-    Dart* dart = nullptr;
+  // a dart incident to this Volume:
+  Dart* dart = nullptr;
 
 };
 
-/*
-class HashVertexFunction {
-public:
-    size_t operator()(const Vertex& v) const {
-        return (std::hash<float>()(v.point.x)) ^ (std::hash<float>()(v.point.y)) ^
-               (std::hash<float>()(v.point.z));
-    }
-};
- */

@@ -128,27 +128,28 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
 void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
                     std::unordered_map<std::string, Edge> &edgeMap, std::vector<Face> &faceVec, Volume &volume,
                     std::vector<Dart*> &darts) {
+    /*
+        initCombiStruct initialises the combinatorial structure that describes the primitives and the relationships
+        between them. The loop mechanism follows the same logic as the one seen in extractCells, with the difference
+        that darts are created, instead of cells. For each 1-cell, two darts are created. Each dart is assigned its
+        corresponding vertex, edge, face and volume. Finally, involutions alpha_i are performed on all darts.
+     */
 
-    int countDart = 0;
+    // For each 2-cell
     for (int i = 0; i < faceVec.size(); i++) {
-        //std::cout << "f" << i << " \n"; //this code keeps track which face we are
 
+        //For each 2-cell's vertices
         for (int j = 0; j < faceVec[i].face_vertices.size(); j++) {
 
+            // Conditional to check if last 0-cell of 2-cell
             if (face_indices[i][j]-1 == faceVec[i].face_vertices.back()) {
-                //std::cout << faceVec[i].face_vertices.front();
                 std::string origin_vS, end_vS, edgeS;
-                //origin_vS = std::to_string(face_indices[i][j]-1);
-                //end_vS = std::to_string(faceVec[i].face_vertices.front());
-                //edgeS = origin_vS + end_vS;
 
+                // Fix ordering of edge key
                 if ((face_indices[i][j]-1) > (faceVec[i].face_vertices.front())) {
                     origin_vS = std::to_string(faceVec[i].face_vertices.front());
                     end_vS = std::to_string(face_indices[i][j]-1);
                     edgeS = origin_vS + end_vS;
-
-                    // vertex track
-                    countDart++;
                     //construct first dart
                     Dart* dart_a = new Dart();
                     // assign vertex
@@ -160,12 +161,8 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     dart_a->f = &faceVec[i];
                     // assign volume
                     dart_a->vo = &volume;
-
                     darts.emplace_back(dart_a);
                     //construct second dart
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-
-                    countDart++;
                     Dart* dart_b = new Dart();
                     // assign vertex
                     dart_b->v = &vertices[faceVec[i].face_vertices.front()];
@@ -177,20 +174,12 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     // assign volume
                     dart_b->vo = &volume;
                     darts.emplace_back(dart_b);
-
-                    // edge track
-
-                    //std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
-
                 }
                 else {
                     origin_vS = std::to_string(face_indices[i][j]-1);
                     end_vS = std::to_string(faceVec[i].face_vertices.front());
                     edgeS = origin_vS + end_vS;
-
-                    // vertex track
-                    countDart++;
-                    //construct first dart
+                    // construct first dart
                     Dart* dart_a = new Dart();
                     // assign vertex
                     dart_a->v = &vertices[face_indices[i][j]-1];
@@ -201,11 +190,8 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     dart_a->f = &faceVec[i];
                     // assign volume
                     dart_a->vo = &volume;
-
                     darts.emplace_back(dart_a);
                     //construct second dart
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                    countDart++;
                     Dart* dart_b = new Dart();
                     // assign vertex
                     dart_b->v = &vertices[faceVec[i].face_vertices.front()];
@@ -217,21 +203,15 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     // assign volume
                     dart_b->vo = &volume;
                     darts.emplace_back(dart_b);
-                    //std::cout << "dart " << countDart << ": v" << faceVec[i].face_vertices.front() << ", e" << edgeS << ", f" << i << "\n";
-                    // edge track
                 }
             }
             else {
                 std::string origin_vS, end_vS, edgeS;
-
                 if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
                     origin_vS = std::to_string(face_indices[i][j+1]-1);
                     end_vS = std::to_string(face_indices[i][j]-1);
                     edgeS = origin_vS + end_vS;
-
-                    // vertex track
-                    countDart++;
-                    //construct first dart
+                    // construct first dart
                     Dart* dart_a = new Dart();
                     // assign vertex
                     dart_a->v = &vertices[face_indices[i][j]-1];
@@ -244,8 +224,6 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     dart_a->vo = &volume;
                     darts.emplace_back(dart_a);
                     //construct second dart
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                    countDart++;
                     Dart* dart_b = new Dart();
                     // assign vertex
                     dart_b->v = &vertices[face_indices[i][j+1]-1];
@@ -257,23 +235,18 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     // assign volume
                     dart_b->vo = &volume;
                     darts.emplace_back(dart_b);
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
-
                 }
+
                 else {
                     origin_vS = std::to_string(face_indices[i][j]-1);
                     end_vS = std::to_string(face_indices[i][j+1]-1);
                     edgeS = origin_vS + end_vS;
-
-                    // vertex track
-                    countDart++;
                     //construct first dart
                     Dart* dart_a = new Dart();
                     // assign vertex
                     dart_a->v = &vertices[face_indices[i][j]-1];
                     // assign edge
                     std::unordered_map<std::string, Edge>::iterator e_dart_a = edgeMap.find(edgeS);
-                    ////std::cout << "edge dart_a: " << e_dart_a->second.edgeS;
                     dart_a->e = &e_dart_a->second;
                     // assign face
                     dart_a->f = &faceVec[i];
@@ -281,27 +254,20 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
                     dart_a->vo = &volume;
                     darts.emplace_back(dart_a);
                     //construct second dart
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j]-1 << ", e" << edgeS << ", f" << i << "\n";
-                    countDart++;
                     Dart* dart_b = new Dart();
-
                     // assign vertex
                     dart_b->v = &vertices[face_indices[i][j+1]-1];
-
                     // assign edge
                     std::unordered_map<std::string, Edge>::iterator e_dart_b = edgeMap.find(edgeS);
                     dart_b->e = &e_dart_b->second;
-
                     // assign face
                     dart_b->f = &faceVec[i];
                     // assign volume
                     dart_b->vo = &volume;
                     darts.emplace_back(dart_b);
-                    //std::cout << "dart " << countDart << ": v" << face_indices[i][j+1]-1 << ", e" << edgeS << ", f" << i << "\n";
                 }
             }
         }
-        //std::cout << "\n";
     }
 
     // Perform involutions for all darts
@@ -312,7 +278,6 @@ void initCombiStruct(std::vector<Vertex> &vertices, std::vector<std::vector<int>
             i->invol_a2(i,j);
         }
     }
-
 }
 
 
@@ -352,7 +317,9 @@ int main(int argc, const char * argv[]) {
     initCombiStruct(vertices,face_indices,edgeMap,faceVec,volume,darts);
 
     // Embedding part of Gmap
+
     std::unordered_map<std::string, Vertex>:: iterator itrV;
+
     // Generate Vertex Embedding
     for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
         for (auto j:darts) {
@@ -361,10 +328,6 @@ int main(int argc, const char * argv[]) {
                 break;
             }
         }
-    }
-
-    for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
-        //std::cout << "key: " << itrV->first << ", value: " << itrV->second.dart << "\n ";
     }
 
 
@@ -379,12 +342,8 @@ int main(int argc, const char * argv[]) {
         }
     }
 
-    for (auto i : edgeMap) {
-        //std::cout << "edge " << i.first << ": " << i.second.dart << "\n";
-    }
 
     // Generate Face Embedding
-
     std::vector<Face>::iterator itrF;
     for (itrF = faceVec.begin(); itrF != faceVec.end(); itrF++) {
         for (auto j : darts) {
@@ -394,11 +353,6 @@ int main(int argc, const char * argv[]) {
         }
     }
 
-    int countFace = 0;
-    for (auto i : faceVec) {
-        countFace++;
-        //std::cout << "face dart" << countFace << ": " << i.dart << "\n";
-    }
 
     // Volume embedding, as we can assume there is only one volume we simply assign one arbitrary darts (ie the first)
     volume.dart = darts[0];
@@ -550,4 +504,17 @@ for (auto i:faceVec) {
     }
 
 
+    int countFace = 0;
+    for (auto i : faceVec) {
+        countFace++;
+        //std::cout << "face dart" << countFace << ": " << i.dart << "\n";
+    }
+
+     for (auto i : edgeMap) {
+        //std::cout << "edge " << i.first << ": " << i.second.dart << "\n";
+    }
+
+        for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
+        //std::cout << "key: " << itrV->first << ", value: " << itrV->second.dart << "\n ";
+    }
 */

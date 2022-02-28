@@ -19,7 +19,7 @@ void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<st
         Output: - void function, stores output into passed vectors.
      */
     std::ifstream stream_in;
-    stream_in.open(file_in);
+    stream_in.open(file_in); // open file
 
     if (stream_in.is_open()) {
         std::string line;
@@ -29,6 +29,7 @@ void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<st
             std::string word;
             iss >> word;
 
+            // Extract all the vertices in the .obj, and store in vector vertices
             if (word == "v") {
                 std::vector<float> coordinates;
                 while (iss >> word) coordinates.push_back(std::stof(word));
@@ -36,60 +37,56 @@ void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<st
                 else vertices.emplace_back();
             }
 
+            // Extract all the faces('s indices) in the .obj, and store in vector face_indices
             if (word == "f") {
                 std::vector<int> face;
                 while (iss >> word) face.emplace_back(std::stoi(word));
                 face_indices.push_back(face);
             }
-
-
         }
-
     }
     stream_in.close();
 }
 
 void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices,
                   std::unordered_map<std::string, Vertex> &vertexMap, std::unordered_map<std::string, Edge> &edgeMap,
-                  std::vector<Face> &faceVec, Volume &volume) {
+                  std::vector<Face> &faceVec) {
+    /*
+        extractCells is a function that loops the raw data of the .obj file per 2-cell (face), and for each 2-cell
+        extract the corresponding 1- and 0-cells. Each n-cell is stored into an appropriate n-container.
 
-    // This loop traverses all faces (per indices), and in the double loop we traverse the vertices
-    // that make up each face.
+        Input:  - raw input of .obj file (vertices and face_indices)
+        Output: - void function, stores output into appropriate containers (either vector or unordered_map)
+     */
 
     for (int i = 0; i < face_indices.size(); i++) {
 
-        // 2-cells
-        Face face_cur;
-
-
-        // the std::cout's are only for visualising the loop process
-        //std::cout << "( ";
-
-
         // 0-cells
         for (int j = 0; j < face_indices[i].size(); j++) {
-            //std::cout << face_indices[i][j] << " ";
 
             // Initialise variables
             Vertex vertex_cur;
             std::string xyz;
 
             // Construct Vertex from current visiting point
-            //std::cout << "vertices[j-1].point.x: " << vertices[j-1].point.x << "\n";
             vertex_cur = Vertex(vertices[face_indices[i][j]-1]);
 
             // For storing the cells, we use unordered_map, this will prevent multiple addition of same cells
+            // We convert the Point coordinates to a string, as this will ease the use of the unordered_map
             xyz = vertex_cur.xyz_tostring(vertex_cur.point.x,vertex_cur.point.y,vertex_cur.point.z);
             vertexMap.insert({xyz, vertex_cur});
 
-            // visualising first vertex repetition
-            //if (face_indices[i][j] == face_indices[i].back()) {std::cout << face_indices[i][0];}
-
             // 1-cells
+            // container for single 1-cell
             Edge edge_cur;
             std::string edgeS;
 
+            // 1. For finding all the connecting edges between the face vertices, it is needed to connect the last vertex
+            // with first vertex. This is what the first conditional statement is for.
             if (face_indices[i][j] == face_indices[i].back()) {
+
+                // 2. To get the same origin-vertex->end-vertex combination for each edge, we need to order them.
+                // In this case, it is chosen to make the combination in ascending order.
                 if ((face_indices[i][j]-1) > (face_indices[i][0]-1)) {
                     edge_cur = Edge(face_indices[i][0]-1, face_indices[i][j]-1);
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
@@ -102,7 +99,9 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
                 }
             }
 
+            // 1. (see comments above)
             else {
+                // 2. (see comments above)
                 if ((face_indices[i][j]-1) > (face_indices[i][j+1]-1)) {
                     edge_cur = Edge(face_indices[i][j+1]-1, face_indices[i][j]-1);
                     edgeS = edge_cur.edge_tostring(edge_cur.origin_v, edge_cur.end_v);
@@ -116,13 +115,13 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
             }
 
             // 2-cells
+            Face face_cur; // container for single 2-cell
             face_cur.face_vertices.push_back(face_indices[i][j]-1);
 
             if (j == (face_indices[i].size() - 1)) {
                 faceVec.push_back(face_cur);
             }
         }
-        //std::cout << " ) \n";
     }
 }
 
@@ -346,10 +345,10 @@ int main(int argc, const char * argv[]) {
     Volume volume;
 
 
-    readObj(file_in, vertices, face_indices);
+    readObj(cube_test, vertices, face_indices);
 
 
-    extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec, volume);
+    extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec);
 
     std::cout << "vertices.size() = " << vertices.size() << "\n";
     std::cout << "face_indices.size() = " << face_indices.size() << "\n";

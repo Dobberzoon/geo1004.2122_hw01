@@ -9,6 +9,15 @@
 #include "Gmap.h"
 
 void readObj(std::string &file_in, std::vector<Vertex> &vertices, std::vector<std::vector<int>> &face_indices) {
+    /*
+        readObj reads .obj file formats, and separates the vertices (x,y,z) from the faces('s indices) into
+        two vectors. These two vectors can then be used for further processing.
+
+        Input:  - (filepath to) .obj
+                - two empty vectors for the vertices and face indices of types Vertex and int, respectively
+
+        Output: - void function, stores output into passed vectors.
+     */
     std::ifstream stream_in;
     stream_in.open(file_in);
 

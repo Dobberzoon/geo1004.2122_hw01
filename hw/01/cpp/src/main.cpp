@@ -330,96 +330,29 @@ int main(int argc, const char * argv[]) {
 
     // ## Read OBJ file ##
     // The vertices and faces are read and stored into vectors.
-
-
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> face_indices;
 
+    readObj(cube_test, vertices, face_indices);
+
     // ## Construct generalised map using the structures from Gmap.h ##
 
-    // where we store darts and cells
+    // Initialisation of containers for darts and n-cells.
     std::vector<Dart*> darts;
     std::unordered_map<std::string, Vertex> vertexMap;
     std::unordered_map<std::string, Edge> edgeMap;
     std::vector<Face> faceVec;
     Volume volume;
 
-
-    readObj(cube_test, vertices, face_indices);
-
-
+    // Start by extracting all cells from the object
     extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec);
 
-    std::cout << "vertices.size() = " << vertices.size() << "\n";
-    std::cout << "face_indices.size() = " << face_indices.size() << "\n";
-
-    std::cout << "\nvertexMap.size() = " << vertexMap.size() << "\n";
-    std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
-    std::cout << "faceVec.size() = " << faceVec.size() << "\n";
-
-
-    /*
-     * code loop to visualise the edgeMap and its contents
-    int countEdges = 0;
-    std::unordered_map<std::string, Edge>:: iterator itrE;
-    std::cout << "\nEdges : \n";
-    for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
-        // itrE works as a pointer to pair<string, double>
-        // type itrE->first stores the key part  and
-        // itrE->second stores the value part
-        std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
-        countEdges++;
-    }
-    */
-
-    /*
-     * code loop to visualise the contents of faceVec, more exact: to reveal how to access its vertices information
-    std::cout << "\nfaces : \n";
-    for (auto i:faceVec) {
-        std::cout << "the face vertices: ";
-        for (auto j:i.face_vertices) {
-            std::cout << j << " ";
-            if (j == i.face_vertices.back()) {std::cout << i.face_vertices.front();}
-        }
-        std::cout << "\n";
-    }
-    */
-
-
-    std::cout << "\ndarts : \n";
-
+    // Continue generation of Gmap by initialising the combinatorial part of the Gmap.
+    // This initialises the darts and performs corresponding involutions alpha_i.
     initCombiStruct(vertices,face_indices,edgeMap,faceVec,volume,darts);
 
-    std::cout << "size of darts: " << darts.size() << "\n\n";
-
-    // loop to visualise the contents of the combinatorial structure part of the gmap
-    int countDarts = 0;
-    for (auto i: darts) {
-    countDarts++;
-    //std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
-    //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
-    }
-
-    int countVertices = 0;
-    for (auto i: vertexMap) {
-        countVertices++;
-
-        for (auto j:darts) {
-            //std::cout << "i.second.xyz: " << i.second.xyz << ", j->v->xyz: " << j->v->xyz << "\n";
-            if (i.second.xyz_tostring(i.second.point.x,i.second.point.y,i.second.point.z) == j->v->xyz_tostring(j->v->point.x,j->v->point.y,j->v->point.z)) {
-                //std::cout << "dart found for this vertex: " << i.first << "\n";
-                //std::cout << ", j->v->xyz: " << j->v->dart << "\n";
-                //std::cout << ", j: " << j << "\n";
-                //i->second->dart = j;
-
-            }
-        }
-        //std::cout << "Vertex " << countVertices << ":\tdart\t" << i.second.dart << "\n";
-    }
-
-
+    // Embedding part of Gmap
     std::unordered_map<std::string, Vertex>:: iterator itrV;
-
     // Generate Vertex Embedding
     for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
         for (auto j:darts) {
@@ -471,6 +404,15 @@ int main(int argc, const char * argv[]) {
     volume.dart = darts[0];
 
     std::cout << "volume dart: " << volume.dart << "\n";
+
+    std::cout << "vertices.size() = " << vertices.size() << "\n";
+    std::cout << "face_indices.size() = " << face_indices.size() << "\n";
+
+    std::cout << "\nvertexMap.size() = " << vertexMap.size() << "\n";
+    std::cout << "edgeMap.size() = " << edgeMap.size() << "\n";
+    std::cout << "faceVec.size() = " << faceVec.size() << "\n";
+
+    std::cout << "size of darts: " << darts.size() << "\n\n";
 
 
     // ## Output generalised map to CSV ##
@@ -555,3 +497,57 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
+
+/*
+ * code loop to visualise the edgeMap and its contents
+int countEdges = 0;
+std::unordered_map<std::string, Edge>:: iterator itrE;
+std::cout << "\nEdges : \n";
+for (itrE = edgeMap.begin(); itrE != edgeMap.end(); itrE++) {
+    // itrE works as a pointer to pair<string, double>
+    // type itrE->first stores the key part  and
+    // itrE->second stores the value part
+    std::cout << countEdges << " key: " << itrE->first << ", value: " << itrE->second.edgeS << std::endl;
+    countEdges++;
+}
+*/
+
+/*
+ * code loop to visualise the contents of faceVec, more exact: to reveal how to access its vertices information
+std::cout << "\nfaces : \n";
+for (auto i:faceVec) {
+    std::cout << "the face vertices: ";
+    for (auto j:i.face_vertices) {
+        std::cout << j << " ";
+        if (j == i.face_vertices.back()) {std::cout << i.face_vertices.front();}
+    }
+    std::cout << "\n";
+}
+
+     // loop to visualise the contents of the combinatorial structure part of the gmap
+    int countDarts = 0;
+    for (auto i: darts) {
+    countDarts++;
+    //std::cout << "dart " << countDarts << "\t" << i << ": \t" << "a0: " << i->a0 << "\t\ta1: " << i->a1 << "\t\ta2: " << i->a2 << "\t\ta3: " << i->a3 << "\n";
+    //std::cout << "dart " << countDarts << ": \t" << i->v->point << "\t\t, e: \t" << i->e->edgeS << ", f: \t" << i->f << ", vo: \t" << i->vo << "\n";
+    }
+
+    int countVertices = 0;
+    for (auto i: vertexMap) {
+        countVertices++;
+
+        for (auto j:darts) {
+            //std::cout << "i.second.xyz: " << i.second.xyz << ", j->v->xyz: " << j->v->xyz << "\n";
+            if (i.second.xyz_tostring(i.second.point.x,i.second.point.y,i.second.point.z) == j->v->xyz_tostring(j->v->point.x,j->v->point.y,j->v->point.z)) {
+                //std::cout << "dart found for this vertex: " << i.first << "\n";
+                //std::cout << ", j->v->xyz: " << j->v->dart << "\n";
+                //std::cout << ", j: " << j << "\n";
+                //i->second->dart = j;
+
+            }
+        }
+        //std::cout << "Vertex " << countVertices << ":\tdart\t" << i.second.dart << "\n";
+    }
+
+
+*/

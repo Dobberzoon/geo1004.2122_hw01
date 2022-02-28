@@ -543,18 +543,17 @@ int main(int argc, const char * argv[]) {
         triangulatedObj << "v ";
         triangulatedObj << i.second.point.x  << " ";
         triangulatedObj << i.second.point.y << " ";
-        triangulatedObj << i.second.point.z;
-        triangulatedObj << std::endl;
+        triangulatedObj << i.second.point.z << std::endl;
     }
 
     for (auto i : faceVec) {
         triangulatedObj << "f ";
-        triangulatedObj << i.dart << " ";
-        triangulatedObj << i.dart << " ";
-        triangulatedObj << i.dart << " ";
+        std::cout << i.dart;
         triangulatedObj << std::endl;
     }
     triangulatedObj.close();
+
+
 
 //    for (int i; i < vertexMap.size(); i++ ){
 //        std::ofstream outputObj;

@@ -452,6 +452,67 @@ int main(int argc, const char * argv[]) {
 
 
     // ## Create triangles from the darts ##
+    //Triangulate
+    std::vector<Point> bcnt_e;
+    std::vector<Point> bcnt_f;
+    //std::vector<triangle_dart> triangles;
+    std::vector<Point> triangles;
+    Point b1, b2;
+    int countb1=0;
+    int countb2=0;
+    //int k=0;
+    for (auto k:edgeMap)
+    {b1=k.second.bar_edge(vertices,k.second.origin_v,k.second.end_v);
+        countb1++;
+        bcnt_e.emplace_back(b1);
+
+        //std::cout<<b1.x<<" "<<b1.y<<" "<<b1.z<<'\n';
+    }
+    //std::cout<<countb1;
+    for (auto l:faceVec)
+    {b2=l.bar_face(vertices,l.face_vertices);
+        countb2++;
+        bcnt_f.emplace_back(b2);
+
+        //std::cout<<b1.x<<" "<<b1.y<<" "<<b1.z<<'\n';
+    }
+    /*int m=0;
+    while(m!=vertices.size())
+    {for (auto i:faceVec)
+    {b2=i.bar_face(vertices,i.face_vertices);
+        for(auto j:edgeMap){
+            b1=j.second.bar_edge(vertices,j.second.origin_v,j.second.end_v);
+            triangles.emplace_back(vertices[m].point);
+            triangles.emplace_back(b1);
+            triangles.emplace_back(b2);
+            m++;}}}*/
+    int m=0;
+    for(int i=0;i<bcnt_f.size();i++)
+    {for (int j=0;j<bcnt_e.size();j++){
+        for(int k=0; k<vertices.size();k++)
+            triangles[m]=vertices[k].point;
+        m++;
+            /*triangles[m]=bcnt_e[j];
+            m++;
+            triangles[m];bcnt_f[i];
+            m++;*/
+    }}
+
+    for(int i=0;i<triangles.size();i++){
+        //for (int j=0;j<=2;j++)
+            std::cout<<"pt:"<<triangles[i]<<" ";
+        std::cout<<'\n';
+
+    }
+
+
+
+
+
+    // ## Write triangles to obj ##
+
+    return 0;
+}
 
     // ## Write triangles to obj ##
 

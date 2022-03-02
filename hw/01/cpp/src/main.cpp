@@ -61,6 +61,9 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
 
     for (int i = 0; i < face_indices.size(); i++) {
 
+        // 2-cells
+        Face face_cur; // container for single 2-cell
+
         // 0-cells
         for (int j = 0; j < face_indices[i].size(); j++) {
 
@@ -114,8 +117,7 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
                 }
             }
 
-            // 2-cells
-            Face face_cur; // container for single 2-cell
+
             face_cur.face_vertices.push_back(face_indices[i][j]-1);
 
             if (j == (face_indices[i].size() - 1)) {
@@ -309,12 +311,20 @@ int main(int argc, const char * argv[]) {
     std::vector<Face> faceVec;
     Volume volume;
 
+
+
     // Start by extracting all cells from the object
     extractCells(vertices, face_indices, vertexMap, edgeMap, faceVec);
 
     // Continue generation of Gmap by initialising the combinatorial part of the Gmap.
     // This initialises the darts and performs corresponding involutions alpha_i.
     initCombiStruct(vertices,face_indices,edgeMap,faceVec,volume,darts);
+
+    int countV = 0;
+    for (auto i : vertexMap) {
+        countV++;
+        std::cout << "vertex struct " << countV << ": " << i.second.point << "\n";
+    }
 
     // Embedding part of Gmap
 
@@ -367,6 +377,54 @@ int main(int argc, const char * argv[]) {
     std::cout << "faceVec.size() = " << faceVec.size() << "\n";
 
     std::cout << "size of darts: " << darts.size() << "\n\n";
+
+
+    int dartOrd = 0;
+
+    int countbarCE = 0;
+    int countbarCF = 0;
+
+    for (auto i : darts) {
+
+        // if barycenter is not yet calculated, calculate barycenter
+        if (i->e->barCE.empty()) {
+            i->e->barycenter(vertices);
+            //std::cout << "barCE is empty!\n";
+            //countbarCE++;
+        }
+        // if barycenter is not yet calculated, calculate barycenter
+        if (i->f->barCF.empty()) {
+            i->f->barycenter(vertices);
+            //std::cout << "barCF is empty!\n";
+            //countbarCF++;
+        }
+
+        // this is to ensure all faces have keys [could be redunant, check later]
+        if (i->f->faceS.empty()) {
+            i->f->face_tostring();
+        }
+
+        //i->f->face_tostring();
+        //std::cout << i->f->faceS << "\n";
+        //std::cout << "dart " << dartOrd << ": v = " << i->v->point <<"bcF = " << i->f->barycenter(vertices) << ", bcE = " << i->e->barycenter(vertices) << "\n";
+        dartOrd++;
+    }
+
+    std::cout << "countbarCE: " << countbarCE << "\n";
+    std::cout << "countbarCF: " << countbarCF << "\n";
+
+    std::vector<std::vector<Point>> triangles;
+
+    for (auto i : darts) {
+        std::vector<Point> vertsTriangles;
+        Point tri1, tri2,tri3;
+        tri1 = i->v->point;
+        tri2 = i->e->barCE;
+        tri3 = i->f->barCF;
+
+
+
+    }
 
 
     // ## Output generalised map to CSV ##
@@ -516,5 +574,24 @@ for (auto i:faceVec) {
 
         for (itrV = vertexMap.begin(); itrV != vertexMap.end(); itrV++) {
         //std::cout << "key: " << itrV->first << ", value: " << itrV->second.dart << "\n ";
+    }
+
+        Point test;
+    Point test2(1,2,3);
+    std::cout << "test point empty: " << test.empty() << "\n";
+    std::cout << "test2 point empty: " << test2.empty() << "\n";
+
+    if (test.empty()) {
+        std::cout << "test is still empty! \n";
+    }
+    else {
+        std::cout << "test is not empty??\n";
+    }
+
+    if (test2.empty()) {
+        std::cout << "test2 is empty??! \n";
+    }
+    else {
+        std::cout << "test2 is not empty!!\n";
     }
 */

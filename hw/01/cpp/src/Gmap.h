@@ -9,34 +9,6 @@ struct Edge;
 struct Face;
 struct Volume;
 
-/*
-Below you find the basic elements that you need to build the generalised map.
-The main thing you need to fill out are the links between the elements:
-  * the involutions and cells on the Dart
-  * the darts on the cells
-
-One way to do this is by using pointers. eg. define a member on the dart struct like
-
-  Struct Dart {
-    // involutions:
-    Dart* a0 = nullptr;
-    // ...
-
-    // cells:
-    // ...
-  
-  };
-
-Then you could create and link Darts like:
-  
-  Dart* dart_a = new Dart();
-  Dart* dart_b = new Dart();
-
-  dart_a->a0 = dart_b;
-
-  dart_a->v =
-*/
-
 struct Dart {
   // involutions:
   Dart* a0 = nullptr;
@@ -115,6 +87,9 @@ struct Edge {
   // also in string format for keys
   std::string edgeS;
 
+  // barycenter of edge
+  Point barCE;
+
   // constructor without arguments
   Edge(){}
 
@@ -136,6 +111,14 @@ struct Edge {
 
   // function to compute the barycenter for this Edge (needed for triangulation output):
   // Point barycenter() {}
+  // function to compute the barycenter for this Edge (needed for triangulation output):
+  Point barycenter(std::vector<Vertex>&vertices) {
+      Vertex start, end;
+      start = vertices[origin_v];
+      end = vertices[end_v];
+      barCE = (start.point+end.point)/2;
+      return barCE;
+  }
 };
 
 struct Face {
@@ -148,29 +131,31 @@ struct Face {
   // also in string format for keys
   std::string faceS;
 
-  /*
-  // constructor without arguments
-  Face(){}
-
-  // constructor with arguments
-  Face(const std::vector<int> &face_indices) {
-      for (auto i : face_indices) {
-          face_vertices.emplace_back(i);
-      }
-  }
-  */
+  // barycenter of face
+  Point barCF;
 
   // function to convert point.x/y/z into concatenated string
-  std::string face_tostring(const int &v0, const int &v1, const int &v2, const int &v3) {
-
-      std::string v0S, v1S, v2S, v3S;
-
-      v0S = std::to_string(v0); v1S = std::to_string(v1); v2S = std::to_string(v2); v3S = std::to_string(v3);
-      faceS = v0S + v1S + v2S + v3S;
-      return faceS;
+  void face_tostring() {
+      std::vector<std::string> vfaceS;
+      for (auto i : face_vertices) {
+          std::string str;
+          str = std::to_string(i);
+          faceS += str;
+      }
   }
   // function to compute the barycenter for this Face (needed for triangulation output):
   // Point barycenter() {}
+  // function to compute the barycenter for this Face (needed for triangulation output):
+  // Point barycenter() {}
+
+  Point barycenter(std::vector<Vertex>&vertices) {
+      Vertex a, b, c, d;
+      a = vertices[face_vertices[0]];
+      b = vertices[face_vertices[1]];
+      c = vertices[face_vertices[2]];
+      d = vertices[face_vertices[3]];
+      barCF=(a.point+b.point+c.point+d.point)/4;
+      return barCF;}
 
 };
 

@@ -8,6 +8,8 @@ product as `p.dot(q)` or `p.cross(q)`.
 */
 struct Point {
   float x, y, z;
+
+  //bool empty;
   
   // constructor without arguments; initialises all coordinates on 0.
   Point() : x(0), y(0), z(0)
@@ -73,6 +75,18 @@ struct Point {
   // cross product operator
   const Point cross(const Point &other) const {
     return Point(y*other.z-z*other.y, -(x*other.z-z*other.x), x*other.y-y*other.x);
+  }
+
+  bool empty() {
+      bool empty;
+      if (this->x == 0 && this->y == 0 & this->z == 0) {
+          empty = true;
+          return empty;
+      }
+      else {
+          empty = false;
+          return empty;
+      }
   }
 };
 

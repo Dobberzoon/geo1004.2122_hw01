@@ -10,6 +10,9 @@ struct Point {
   float x, y, z;
 
   //bool empty;
+
+  // also in string format for making keys
+  std::string xyz;
   
   // constructor without arguments; initialises all coordinates on 0.
   Point() : x(0), y(0), z(0)
@@ -88,6 +91,16 @@ struct Point {
           return empty;
       }
   }
+
+    // function to convert point.x/y/z into concatenated string
+    std::string xyz_tostring() {
+        std::string xS, yS, zS;
+        xS = std::to_string(this->x);
+        yS = std::to_string(this->y);
+        zS = std::to_string(this->z);
+        xyz = xS + yS + zS;
+        return xyz;
+    }
 };
 
 // function to print the coordinates of a point using eg `std::cout << p`, where p is a Point struct

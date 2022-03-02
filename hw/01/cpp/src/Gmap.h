@@ -154,9 +154,9 @@ struct Face {
       b = vertices[face_vertices[1]];
       c = vertices[face_vertices[2]];
       d = vertices[face_vertices[3]];
-      barCF=(a.point+b.point+c.point+d.point)/4;
-      return barCF;}
-
+      barCF = (a.point+b.point+c.point+d.point)/4;
+      return barCF;
+  }
 };
 
 struct Volume {

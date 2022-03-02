@@ -118,8 +118,11 @@ void extractCells(std::vector<Vertex> &vertices, std::vector<std::vector<int>> &
             }
 
 
+            // For each index, push vertex into face vertices
             face_cur.face_vertices.push_back(face_indices[i][j]-1);
 
+            // When it is the last iteration of the j loop, push the whole Face
+            // into the vector of faces
             if (j == (face_indices[i].size() - 1)) {
                 faceVec.push_back(face_cur);
             }
@@ -321,9 +324,9 @@ int main(int argc, const char * argv[]) {
     initCombiStruct(vertices,face_indices,edgeMap,faceVec,volume,darts);
 
     int countV = 0;
-    for (auto i : vertexMap) {
+    for (auto i : vertices) {
         countV++;
-        std::cout << "vertex struct " << countV << ": " << i.second.point << "\n";
+        std::cout << "vertex " << countV << ": " << i.point << "\n";
     }
 
     // Embedding part of Gmap
@@ -378,9 +381,206 @@ int main(int argc, const char * argv[]) {
 
     std::cout << "size of darts: " << darts.size() << "\n\n";
 
+    std::cout << "the faces and its indices: \n\n";
+    for (int i = 0; i < face_indices.size(); i++) {
+        std::cout << "( ";
+        for (int j = 0; j < face_indices[i].size(); j++) {
+            if (face_indices[i][j] == face_indices[i].back()) {
+                std::cout << face_indices[i][j] << " ";
+                std::cout << face_indices[i].front() << " ";
+            }
+            else {
+                std::cout << face_indices[i][j] << " ";
+            }
+        }
+        std::cout << ")\n";
+    }
 
+
+    // In these following loops we update all faces and vertices by calculating the corresponding barycenters
+    int countFaces = 0;
+    std::vector<Face>:: iterator itrF2;
+    std::cout << "\nFaces' barycenter : \n";
+    for (itrF2 = faceVec.begin(); itrF2 != faceVec.end(); itrF2++) {
+        // itrF2 works as a pointer to pair<string, double>
+        // type itrF2->first stores the key part  and
+        // itrF2->second stores the value part
+        itrF2->barycenter(vertices);
+        countFaces++;
+        std::cout << "face vertices : ";
+        for (auto i : itrF2->face_vertices) {
+            std::cout << i << " ";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << "\n\n";
+
+    std::unordered_map<std::string, Edge>:: iterator itrE2;
+    //std::cout << "\nEdges' barycenter: \n";
+    for (itrE2 = edgeMap.begin(); itrE2 != edgeMap.end(); itrE2++) {
+        // itrE2 works as a pointer to pair<string, double>
+        // type itrE2->first stores the key part  and
+        // itrE2->second stores the value part
+        itrE2->second.barycenter(vertices);
+    }
+
+    // Triangulation
+
+    // Store vertices as Point for .obj
+    std::vector<Point> outObjVertices;
+
+    // Store vertices as Point for .obj without duplicates
+    std::unordered_map<std::string, Point> outObjVerticesUnique;
+
+    // Store triangle indices as 1-based index for .obj
+    std::vector<int> outObjTriangles;
+
+    // Loop over faces and corresponding edges
+    // For each face, store face barycenter and make two triangles edge-wise
+
+    std::cout << "triangulation tests: \n\n";
+    int countTri = 1;
+    for (auto i : faceVec) {
+
+        outObjVerticesUnique.insert({i.barCF.xyz_tostring(), i.barCF});
+        countTri++;
+        std::cout << "face verts: ";
+        int count = 0;
+
+        for (int j = 0; j < i.face_vertices.size(); j++) {
+            if (i.face_vertices[j] == i.face_vertices.back()) {
+                if (i.face_vertices[j] > i.face_vertices.front()) {
+                    std::cout << i.face_vertices[j] << " ";
+                    std::cout << i.face_vertices.front() << " ";
+                    // vertices of triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+
+                    b = vertices[i.face_vertices[j]].point;
+                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices.front());
+                    end_v  = std::to_string(i.face_vertices[j]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    d = vertices[i.face_vertices.front()].point;
+                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                }
+                else {
+                    std::cout << i.face_vertices[j] << " ";
+                    std::cout << i.face_vertices.front() << " ";
+                    // vertices of triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+
+                    b = vertices[i.face_vertices[j]].point;
+                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j]);
+                    end_v = std::to_string(i.face_vertices.front());
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    d = vertices[i.face_vertices.front()].point;
+                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                }
+
+
+            }
+            else {
+                if (i.face_vertices[j] > i.face_vertices[j+1]) {
+                    std::cout << i.face_vertices[j] << " ";
+                    // vertices of two triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+                    b = vertices[i.face_vertices[j]].point;
+                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j+1]);
+                    end_v = std::to_string(i.face_vertices[j]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    // a (already have
+                    // c (already have)
+                    d = vertices[i.face_vertices[j+1]].point;
+                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                }
+                else {
+                    std::cout << i.face_vertices[j] << " ";
+                    // vertices of two triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+                    b = vertices[i.face_vertices[j]].point;
+                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j]);
+                    end_v = std::to_string(i.face_vertices[j+1]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    // a (already have
+                    // c (already have)
+                    d = vertices[i.face_vertices[j+1]].point;
+                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                }
+            }
+            count++;
+        }
+
+        std::cout << "\n";
+
+
+    }
+    std::cout << "outObjVerticesUnique.size(): " << outObjVerticesUnique.size() << "\n";
+
+
+    /*
+    std::vector<Face>:: iterator itrF3;
+    std::unordered_map<std::string, Edge>:: iterator itrE3;
+    std::cout << "\nFaces' barycenter : \n";
+    for (itrF2 = faceVec.begin(); itrF2 != faceVec.end(); itrF2++) {
+        // barycenter of face
+        std::cout << itrF2->barCF << std::endl;
+
+        // for each face, iterate
+        for (itrE2 = edgeMap.begin(); itrE2 != edgeMap.end(); itrE2++) {
+            // itrE2 works as a pointer to pair<string, double>
+            // type itrE2->first stores the key part  and
+            // itrE2->second stores the value part
+            std::cout << "start: " << vertices[itrE2->second.origin_v].point << " end : " << vertices[itrE2->second.end_v].point << "\n";
+            std::cout << itrE2->second.barCE << std::endl;
+        }
+    }
+     */
+
+
+
+
+    /*
     int dartOrd = 0;
-
     int countbarCE = 0;
     int countbarCF = 0;
 
@@ -412,6 +612,7 @@ int main(int argc, const char * argv[]) {
 
     std::cout << "countbarCE: " << countbarCE << "\n";
     std::cout << "countbarCF: " << countbarCF << "\n";
+     */
 
     std::vector<std::vector<Point>> triangles;
 
@@ -421,9 +622,6 @@ int main(int argc, const char * argv[]) {
         tri1 = i->v->point;
         tri2 = i->e->barCE;
         tri3 = i->f->barCF;
-
-
-
     }
 
 

@@ -303,7 +303,7 @@ int main(int argc, const char * argv[]) {
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> face_indices;
 
-    readObj(cube_test, vertices, face_indices);
+    readObj(file_in, vertices, face_indices);
 
     // ## Construct generalised map using the structures from Gmap.h ##
 
@@ -434,31 +434,48 @@ int main(int argc, const char * argv[]) {
     std::unordered_map<std::string, Point> outObjVerticesUnique;
 
     // Store triangle indices as 1-based index for .obj
-    std::vector<int> outObjTriangles;
+    std::vector<std::vector<int>> outObjTriangles;
 
     // Loop over faces and corresponding edges
     // For each face, store face barycenter and make two triangles edge-wise
 
+    std::vector<Point> objPoints;
+    std::vector<std::string> keys;
+
     std::cout << "triangulation tests: \n\n";
-    int countTri = 1;
+    // Inserting unique vertices of triangles
     for (auto i : faceVec) {
 
-        outObjVerticesUnique.insert({i.barCF.xyz_tostring(), i.barCF});
-        countTri++;
+        if (outObjVerticesUnique.find(i.barCF.xyz_tostring()) != outObjVerticesUnique.end()) {
+            //continue;
+        }
+        else {
+            outObjVerticesUnique.insert({i.barCF.xyz_tostring(), i.barCF});
+            objPoints.emplace_back(i.barCF);
+            keys.emplace_back(i.barCF.xyz_tostring());
+        }
         std::cout << "face verts: ";
         int count = 0;
 
         for (int j = 0; j < i.face_vertices.size(); j++) {
             if (i.face_vertices[j] == i.face_vertices.back()) {
                 if (i.face_vertices[j] > i.face_vertices.front()) {
-                    std::cout << i.face_vertices[j] << " ";
-                    std::cout << i.face_vertices.front() << " ";
+                    //std::cout << i.face_vertices[j] << " ";
+                    //std::cout << i.face_vertices.front() << " ";
                     // vertices of triangle
                     Point a, b, c, d;
                     a = i.barCF;
 
                     b = vertices[i.face_vertices[j]].point;
-                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    if (outObjVerticesUnique.find(b.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({b.xyz_tostring(), b});
+                        objPoints.emplace_back(b);
+                        keys.emplace_back(b.xyz_tostring());
+                    }
 
                     // make key of edge
 
@@ -468,20 +485,66 @@ int main(int argc, const char * argv[]) {
                     edgeKey = origin_v + end_v;
                     std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
                     c = edgeItr->second.barCE;
-                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    if (outObjVerticesUnique.find(c.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({c.xyz_tostring(), c});
+                        objPoints.emplace_back(c);
+                        keys.emplace_back(c.xyz_tostring());
+                    }
 
                     d = vertices[i.face_vertices.front()].point;
-                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                    //outObjVerticesUnique.insert({d.xyz_tostring(), d});
+
+                    if (outObjVerticesUnique.find(d.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                        objPoints.emplace_back(d);
+                        keys.emplace_back(d.xyz_tostring());
+                    }
+
+                    /*
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = countTri;
+                    ib = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(b.xyz_tostring())) + 1;
+                    ic = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(c.xyz_tostring())) + 1;
+                    id = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(d.xyz_tostring())) + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    std::cout << "loop 1: \n";
+                    std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                    */
+
                 }
                 else {
-                    std::cout << i.face_vertices[j] << " ";
-                    std::cout << i.face_vertices.front() << " ";
+                    //std::cout << i.face_vertices[j] << " ";
+                    //std::cout << i.face_vertices.front() << " ";
                     // vertices of triangle
                     Point a, b, c, d;
                     a = i.barCF;
 
                     b = vertices[i.face_vertices[j]].point;
-                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    if (outObjVerticesUnique.find(b.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({b.xyz_tostring(), b});
+                        objPoints.emplace_back(b);
+                        keys.emplace_back(b.xyz_tostring());
+                    }
 
                     // make key of edge
 
@@ -491,22 +554,62 @@ int main(int argc, const char * argv[]) {
                     edgeKey = origin_v + end_v;
                     std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
                     c = edgeItr->second.barCE;
-                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+                    if (outObjVerticesUnique.find(c.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({c.xyz_tostring(), c});
+                        objPoints.emplace_back(c);
+                        keys.emplace_back(c.xyz_tostring());
+                    }
 
                     d = vertices[i.face_vertices.front()].point;
-                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                    if (outObjVerticesUnique.find(d.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                        objPoints.emplace_back(d);
+                        keys.emplace_back(d.xyz_tostring());
+                    }
+                    /*
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = countTri;
+                    ib = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(b.xyz_tostring())) + 1;
+                    ic = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(c.xyz_tostring())) + 1;
+                    id = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(d.xyz_tostring())) + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    std::cout << "loop 2: \n";
+                    std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                    */
                 }
 
 
             }
             else {
                 if (i.face_vertices[j] > i.face_vertices[j+1]) {
-                    std::cout << i.face_vertices[j] << " ";
+                    //std::cout << i.face_vertices[j] << " ";
                     // vertices of two triangle
                     Point a, b, c, d;
                     a = i.barCF;
                     b = vertices[i.face_vertices[j]].point;
-                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+                    if (outObjVerticesUnique.find(b.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({b.xyz_tostring(), b});
+                        objPoints.emplace_back(b);
+                        keys.emplace_back(b.xyz_tostring());
+                    }
 
                     // make key of edge
 
@@ -516,20 +619,63 @@ int main(int argc, const char * argv[]) {
                     edgeKey = origin_v + end_v;
                     std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
                     c = edgeItr->second.barCE;
-                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    if (outObjVerticesUnique.find(c.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({c.xyz_tostring(), c});
+                        objPoints.emplace_back(c);
+                        keys.emplace_back(c.xyz_tostring());
+                    }
 
                     // a (already have
                     // c (already have)
                     d = vertices[i.face_vertices[j+1]].point;
-                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+
+                    if (outObjVerticesUnique.find(d.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                        objPoints.emplace_back(d);
+                        keys.emplace_back(d.xyz_tostring());
+                    }
+                    /*
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = countTri;
+                    ib = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(b.xyz_tostring())) + 1;
+                    ic = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(c.xyz_tostring())) + 1;
+                    id = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(d.xyz_tostring())) + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    std::cout << "loop 3: \n";
+                    std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                    */
                 }
                 else {
-                    std::cout << i.face_vertices[j] << " ";
+                    //std::cout << i.face_vertices[j] << " ";
                     // vertices of two triangle
                     Point a, b, c, d;
                     a = i.barCF;
                     b = vertices[i.face_vertices[j]].point;
-                    outObjVerticesUnique.insert({b.xyz_tostring(), b});
+
+                    if (outObjVerticesUnique.find(b.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({b.xyz_tostring(), b});
+                        objPoints.emplace_back(b);
+                        keys.emplace_back(b.xyz_tostring());
+                    }
 
                     // make key of edge
 
@@ -539,23 +685,280 @@ int main(int argc, const char * argv[]) {
                     edgeKey = origin_v + end_v;
                     std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
                     c = edgeItr->second.barCE;
-                    outObjVerticesUnique.insert({c.xyz_tostring(), c});
+
+                    if (outObjVerticesUnique.find(c.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({c.xyz_tostring(), c});
+                        objPoints.emplace_back(c);
+                        keys.emplace_back(c.xyz_tostring());
+                    }
 
                     // a (already have
                     // c (already have)
                     d = vertices[i.face_vertices[j+1]].point;
-                    outObjVerticesUnique.insert({d.xyz_tostring(), d});
+
+                    if (outObjVerticesUnique.find(d.xyz_tostring()) != outObjVerticesUnique.end()) {
+                        //continue;
+                    }
+                    else {
+                        outObjVerticesUnique.insert({d.xyz_tostring(), d});
+                        objPoints.emplace_back(d);
+                        keys.emplace_back(d.xyz_tostring());
+                    }
+
+                    /*
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = countTri;
+                    ib = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(b.xyz_tostring())) + 1;
+                    ic = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(c.xyz_tostring())) + 1;
+                    id = std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(d.xyz_tostring())) + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    std::cout << "loop 4: \n";
+                    std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+
+                    std::cout << "point a: " << a << "xyz: " << a.xyz_tostring() << "\n";
+                    std::cout << "point b: " << b << "xyz: " << b.xyz_tostring() << "\n";
+                    std::cout << "point d: " << d << " xyz: " << d.xyz_tostring() << "dist: " << std::distance(outObjVerticesUnique.begin(), outObjVerticesUnique.find(d.xyz_tostring())) << "\n";
+                    */
+
                 }
             }
             count++;
         }
 
         std::cout << "\n";
-
-
     }
+
+    std::cout << "objPoints.size(): " << objPoints.size() << "\n";
+
+    std::cout << "keys.size(): " << keys.size() << "\n";
+
+    std::cout << "objPoints: \n";
+    for(auto i : objPoints) {
+        std::cout << "vertex: " << i << "\n";
+    }
+
+    // Construct triangle indices
+    int countTri = 1;
+    for (auto i : faceVec) {
+
+        auto itra = std::find(keys.begin(), keys.end(), i.barCF.xyz_tostring());
+
+        for (int j = 0; j < i.face_vertices.size(); j++) {
+            if (i.face_vertices[j] == i.face_vertices.back()) {
+                if (i.face_vertices[j] > i.face_vertices.front()) {
+
+                    // vertices of triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+
+                    b = vertices[i.face_vertices[j]].point;
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices.front());
+                    end_v  = std::to_string(i.face_vertices[j]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+
+                    d = vertices[i.face_vertices.front()].point;
+
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    auto itrb = std::find(keys.begin(), keys.end(), b.xyz_tostring());
+                    auto itrc = std::find(keys.begin(), keys.end(), c.xyz_tostring());
+                    auto itrd = std::find(keys.begin(), keys.end(), d.xyz_tostring());
+
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = itra - keys.begin() + 1;
+                    ib = itrb - keys.begin() + 1;
+                    ic = itrc - keys.begin() + 1;
+                    id = itrd - keys.begin() + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    //std::cout << "loop 1: \n";
+                    //std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    //std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+
+
+                }
+                else {
+
+                    // vertices of triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+                    b = vertices[i.face_vertices[j]].point;
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j]);
+                    end_v = std::to_string(i.face_vertices.front());
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+
+                    d = vertices[i.face_vertices.front()].point;
+
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    auto itrb = std::find(keys.begin(), keys.end(), b.xyz_tostring());
+                    auto itrc = std::find(keys.begin(), keys.end(), c.xyz_tostring());
+                    auto itrd = std::find(keys.begin(), keys.end(), d.xyz_tostring());
+
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = itra - keys.begin() + 1;
+                    ib = itrb - keys.begin() + 1;
+                    ic = itrc - keys.begin() + 1;
+                    id = itrd - keys.begin() + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    //std::cout << "loop 1: \n";
+                    //std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    //std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                }
+
+
+            }
+            else {
+                if (i.face_vertices[j] > i.face_vertices[j+1]) {
+                    //std::cout << i.face_vertices[j] << " ";
+                    // vertices of two triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+                    b = vertices[i.face_vertices[j]].point;
+
+                    // make key of edge
+
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j+1]);
+                    end_v = std::to_string(i.face_vertices[j]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+
+                    // a (already have
+                    // c (already have)
+                    d = vertices[i.face_vertices[j+1]].point;
+
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    auto itrb = std::find(keys.begin(), keys.end(), b.xyz_tostring());
+                    auto itrc = std::find(keys.begin(), keys.end(), c.xyz_tostring());
+                    auto itrd = std::find(keys.begin(), keys.end(), d.xyz_tostring());
+
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = itra - keys.begin() + 1;
+                    ib = itrb - keys.begin() + 1;
+                    ic = itrc - keys.begin() + 1;
+                    id = itrd - keys.begin() + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    //std::cout << "loop 1: \n";
+                    //std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    //std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                }
+                else {
+
+                    // vertices of two triangle
+                    Point a, b, c, d;
+                    a = i.barCF;
+                    b = vertices[i.face_vertices[j]].point;
+
+                    // make key of edge
+                    std::string origin_v, end_v, edgeKey;
+                    origin_v = std::to_string(i.face_vertices[j]);
+                    end_v = std::to_string(i.face_vertices[j+1]);
+                    edgeKey = origin_v + end_v;
+                    std::unordered_map<std::string, Edge>::iterator edgeItr = edgeMap.find(edgeKey);
+                    c = edgeItr->second.barCE;
+
+                    d = vertices[i.face_vertices[j+1]].point;
+
+                    // Store triangle's face indices and push into outObjTriangles
+                    // abc
+                    auto itrb = std::find(keys.begin(), keys.end(), b.xyz_tostring());
+                    auto itrc = std::find(keys.begin(), keys.end(), c.xyz_tostring());
+                    auto itrd = std::find(keys.begin(), keys.end(), d.xyz_tostring());
+
+                    int ia, ib, ic, id;
+                    std::vector<int> tri1, tri2;
+                    ia = itra - keys.begin() + 1;
+                    ib = itrb - keys.begin() + 1;
+                    ic = itrc - keys.begin() + 1;
+                    id = itrd - keys.begin() + 1;
+
+                    tri1.emplace_back(ia); tri1.emplace_back(ib); tri1.emplace_back(ic);
+                    outObjTriangles.emplace_back(tri1);
+                    //std::cout << "loop 1: \n";
+                    //std::cout << "tri 1 : " << ia << " " << ib << " " << ic << "\n";
+                    //acb
+                    tri2.emplace_back(ia); tri2.emplace_back(ic); tri2.emplace_back(id);
+                    outObjTriangles.emplace_back(tri2);
+                    //std::cout << "tri 2 : " << ia << " " << ic << " " << id << "\n";
+                }
+            }
+        }
+        countTri++;
+    }
+
+
+    std::cout << "objPoints.size(): " << objPoints.size() << "\n";
+
+
     std::cout << "outObjVerticesUnique.size(): " << outObjVerticesUnique.size() << "\n";
 
+    std::cout << "outObjTriangles.size(): " << outObjTriangles.size() << "\n\n";
+
+
+
+    for (auto i : outObjTriangles) {
+        std::cout << "tri: ";
+        for (auto j : i) {
+            std::cout << j << " ";
+        }
+        std::cout << "\n";
+    }
+
+
+
+    std::cout << "objPoints YALL \n";
+    for (auto i : objPoints) {
+        std::cout << i << "\n";
+    }
+
+    std::cout << "keys YALL \n";
+    for (auto i : keys) {
+        std::cout << i << "\n";
+    }
 
     /*
     std::vector<Face>:: iterator itrF3;
@@ -703,6 +1106,25 @@ int main(int argc, const char * argv[]) {
     // ## Create triangles from the darts ##
 
     // ## Write triangles to obj ##
+
+
+    std::ofstream triObj ("triangulated_torus.obj");
+    for (auto i : objPoints) {
+        triObj << "v ";
+        triObj << std::fixed << std::setprecision(6) << i.x  << " ";
+        triObj << std::fixed << std::setprecision(6) << i.y << " ";
+        triObj << std::fixed << std::setprecision(6) << i.z <<"\n";
+    }
+
+    for (int i = 0; i < outObjTriangles.size(); i++) {
+        triObj<<"f ";
+        for (int j = 0; j < outObjTriangles[i].size(); j++) {
+            triObj << outObjTriangles[i][j] << " ";
+
+        }
+        triObj<<'\n';}
+
+    triObj.close();
 
     return 0;
 }

@@ -507,14 +507,31 @@ int main(int argc, const char * argv[]) {
 
 
 
-
-
     // ## Write triangles to obj ##
+    
+     std::ofstream triObj ("triangulated.obj");
+    for (auto i : vertexMap) {
+        triObj << "v ";
+        triObj << i.second.point.x  << " ";
+        triObj << i.second.point.y << " ";
+        triObj << i.second.point.z <<"\n";
+    }
 
-    return 0;
-}
+    for (auto i : faceVec) {
+        triObj << "f ";
+        triObj << i.face_vertices[0]<<" ";
+        triObj<< i.face_vertices[1]<<" ";
+        triObj << i.face_vertices[2]<<"\n";
+    }
 
-    // ## Write triangles to obj ##
+        /*for (auto i : faceVec) {
+        triObj << "f ";
+        for (auto j:i.face_vertices){
+        triObj << j<<" ";}
+
+        triObj <<"\n";}*/
+
+    triObj.close();
 
     return 0;
 }

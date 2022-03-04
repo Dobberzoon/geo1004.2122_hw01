@@ -333,17 +333,108 @@ void generateEmbedding(std::unordered_map<std::string, Vertex> &vertexMap, std::
     volume.dart = darts[0];
 }
 
+void out_darts(std::string darts_file, std::vector<Dart*> &darts){
+    /* Output of darts into csv file containing information of the darts
+     * Input: darts_file => "darts.csv"
+     * Output: darts.csv
+     */
+
+    std::ofstream out_darts( darts_file );
+    out_darts << "id;a0;a1;a2;a3;v;e;f" << std::endl;
+    for (auto i : darts) {
+        out_darts << i<< ";";
+        out_darts << i->a0 << ";";
+        out_darts << i->a1 << ";";
+        out_darts << i->a2 << ";";
+        out_darts << i->v << ";";
+        out_darts << i->e << ";";
+        out_darts << i->f;
+        out_darts<<"\n";
+    }
+    out_darts.close();
+}
+
+void out_vert(std::string vertex_file, std::unordered_map<std::string, Vertex> &vertexMap){
+    /* Out put of verticies into the vertices csv
+     * Input: vertex_file and file location of vertex csv
+     * Output: vertex.csv
+     */
+
+    // one CSV file for the 0-cells (ending on vertices.csv) with at least the columns ID, dart, x, y, and z,
+    std::ofstream out_vert (vertex_file);
+    out_vert<<"id;dart;x;y;z\n";
+    int vertind=0;
+    for (auto i : vertexMap) {
+        out_vert << vertind << ";";
+        out_vert << i.second.dart << ";";
+        out_vert <<i.second.point.x  << ";";
+        out_vert<<i.second.point.y << ";";
+        out_vert<<i.second.point.z;
+        out_vert<<"\n";
+        vertind++;
+    }
+    out_vert.close();
+}
+
+void out_edges(std::string edges_file, std::unordered_map<std::string, Edge> &edgeMap){
+    /* Out put of vertices into the vertices csv
+     * Input: edge_file and file location of edges csv
+     * Output: edges.csv
+     */
+    std::ofstream out_edges (edges_file);
+    out_edges<<"id;dart"<<std::endl;
+    int edgeIdx = 0;
+    for (auto i : edgeMap) {
+        out_edges << edgeIdx << ";";
+        out_edges << i.second.dart;
+        out_edges<<"\n";
+        edgeIdx++;
+    }
+    out_edges.close();
+}
+
+void out_faces(std::string faces_file, std::vector<Face> &faceVec){
+    /* Out put of faces into the faces csv
+     * Input: faces_file and file location of faces csv
+     * Output: faces.csv
+     */
+    std::ofstream out_face (faces_file);
+    out_face<<"id;dart"<<"\n";
+    int idFace = 0;
+    for (auto i : faceVec) {
+        out_face << idFace << ";";
+        out_face << i.dart;
+        out_face<<"\n";
+        idFace++;
+    }
+    out_face.close();
+}
+
+void out_volume(std::string volume_file, Volume &volume){
+    /* Out put of volume into the volume csv
+     * Input: volume_file and file location of volume csv
+     * Output: volume.csv
+     */
+    std::ofstream out_vol (volume_file);
+    out_vol<<"id;dart\n";
+
+    out_vol << 0 << ";";
+    out_vol << volume.dart;
+
+    out_vol.close();
+}
+
 int main(int argc, const char * argv[]) {
 
-    std::string file_in = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus.obj";
-    std::string cube_test = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
-    std::string cube_test2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/cube2.obj";
-    std::string file_out_obj = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_triangulated.obj";
-    std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_darts.csv";
-    std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_vertices.csv";
-    std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_edges.csv";
-    std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_faces.csv";
-    std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/geo1004.2022/hw/01/data/torus_volume.csv";
+    std::string file_in =        "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus.obj";
+    std::string cube_test =      "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube.obj";
+    std::string cube_test2 =     "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/cube2.obj";
+    std::string file_out_obj =   "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_triangulated.obj";
+    std::string file_out_csv_d = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_darts.csv";
+    std::string file_out_csv_0 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_vertices.csv";
+    std::string file_out_csv_1 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_edges.csv";
+    std::string file_out_csv_2 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_faces.csv";
+    std::string file_out_csv_3 = "/Users/danieldobson/Library/CloudStorage/OneDrive-Personal/GEOMATICS/GEO1004/assignments/hw01/hw/01/data/torus_volume.csv";
 
     // ## Read OBJ file ##
     // The vertices and faces are read and stored into vectors.
@@ -871,75 +962,19 @@ int main(int argc, const char * argv[]) {
 
     // ## Output generalised map to CSV ##
 
-    std::ofstream out_darts ("darts.csv");
-    out_darts << "id;a0;a1;a2;a3;v;e;f"<<std::endl;
-    for (auto i : darts) {
-        out_darts << i<< ";";
-        out_darts << i->a0 << ";";
-        out_darts << i->a1 << ";";
-        out_darts << i->a2 << ";";
-        out_darts << i->v << ";";
-        out_darts << i->e << ";";
-        out_darts << i->f;
-        out_darts<<"\n";
-    }
-    out_darts.close();
-
-
-    // one CSV file for the 0-cells (ending on vertices.csv) with at least the columns ID, dart, x, y, and z,
-    std::ofstream out_vert ("vertices.csv");
-    out_vert<<"id;dart;x;y;z\n";
-    int vertind=0;
-    for (auto i : vertexMap) {
-        //std::cout << "point: " << i.second.point << "\n";
-        //for (auto j :darts)
-        //out_vert << countDarts << ";";
-        out_vert << vertind << ";";
-        out_vert << i.second.dart << ";";
-        out_vert <<i.second.point.x  << ";";
-        out_vert<<i.second.point.y << ";";
-        out_vert<<i.second.point.z;
-        out_vert<<"\n";
-        vertind++;
-    }
-    out_vert.close();
-
+    // ## Output generalised map to CSV ##
+    out_darts(file_out_csv_d, darts);
+    out_vert(file_out_csv_0, vertexMap);
 
     // one CSV file for the 1-cells (ending on edges.csv) with at least the columns ID, dart,
-    std::ofstream out_edges ("edges.csv");
-    out_edges<<"id;dart"<<std::endl;
-    int edgeIdx = 0;
-    for (auto i : edgeMap) {
-        //out_edges << countDarts << ";";
-        out_edges << edgeIdx << ";";
-        out_edges << i.second.dart;
-        out_edges<<"\n";
-        edgeIdx++;
-    }
-    out_edges.close();
-
+    out_edges(file_out_csv_1, edgeMap);
 
     // one CSV file for the 2-cells (ending on faces.csv) with at least the columns ID, dart,
-    std::ofstream out_face ("faces.csv");
-    out_face<<"id;dart"<<"\n";
-    int idFace = 0;
-    for (auto i : faceVec) {
-        out_face << idFace << ";";
-        out_face << i.dart;
-        out_face<<"\n";
-        idFace++;
-    }
-    out_face.close();
-
+    out_faces(file_out_csv_2, faceVec);
 
     // one CSV file for the 3-cell (ending on volume.csv) with at least the columns ID, dart.
-    std::ofstream out_vol ("volume.csv");
-    out_vol<<"id;dart\n";
+    out_volume(file_out_csv_3, volume);
 
-    out_vol << 0 << ";";
-    out_vol << volume.dart;
-
-    out_vol.close();
 
 
 

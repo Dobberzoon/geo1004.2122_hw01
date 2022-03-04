@@ -38,17 +38,12 @@ Now, to start the program from the build folder in cmd line:
 $ ./hw01
 ```
 
-Runtime on Apple Mac Air M1:  
 
 ## Alternative build: simply use IDE of choice (e.g. CLion 2021.3)
 
-Runtime on Apple Mac Air M1: 133ms
-
-## How to use
-
 
 ## Add own path for input dataset
-Change path for input_data location at line 313-321 to link your local path accordingly.
+Change path for input_data location at line 810-817 to link your local path accordingly.
 
 ## Provided dataset
 

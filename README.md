@@ -1,6 +1,7 @@
-# Geo1004.2022
+# Triangulating a polygonal mesh with generalised maps
 
-Assignments for geo1004.2022
+Assignment for geo1004.2022
+
 
 Authors: 		    Daniël Dobson, Irina Gheorghiu, Leo Kan
 

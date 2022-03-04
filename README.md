@@ -2,9 +2,9 @@
 
 Assignments for geo1004.2022
 
-Authors: 		Daniël Dobson, Irina, Leo
+Authors: 		    Daniël Dobson, Irina Gheorghiu, Leo Kan
 
-Student number: 5152739
+Student number: 5152739, 5627834, 5505801
 
 ## How to build from command line
 

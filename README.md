@@ -2,10 +2,15 @@
 
 Assignment for geo1004.2022
 
+Authors: 		      Daniël Dobson, Irina Gheorghiu, Leo Kan
+Student number:   5152739, 5627834, 5505801
 
-Authors: 		    Daniël Dobson, Irina Gheorghiu, Leo Kan
+This program writes a mesh (.obj) into a datastructure (generalised map), and outputs a triangulated mesh (.obj). This is achieved in four steps:
 
-Student number: 5152739, 5627834, 5505801
+1. read a 3D polygonal mesh from an OBJ file,
+2. store the polygonal mesh in a generalised map,
+3. output all the darts and cells from the generalised map to .csv files, and finally
+4. output a triangulation of the polygonal mesh to a new OBJ file.
 
 ## How to build from command line
 

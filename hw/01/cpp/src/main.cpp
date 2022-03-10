@@ -823,7 +823,7 @@ int main(int argc, const char * argv[]) {
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> face_indices;
 
-    readObj(file_in, vertices, face_indices);
+    readObj(cube_test, vertices, face_indices);
 
     // ## Construct generalised map using the structures from Gmap.h ##
     // The Gmap will be created in two parts
@@ -877,7 +877,7 @@ int main(int argc, const char * argv[]) {
     outVolumeCSV(file_out_csv_3, volume);
 
     // ## Write triangles to obj ##
-    objWriter(file_in, file_out_obj, outObjVertices, outObjTriangles);
+    objWriter(cube_test, file_out_test, outObjVertices, outObjTriangles);
 
     return 0;
 }
